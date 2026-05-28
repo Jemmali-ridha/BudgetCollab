@@ -62,13 +62,14 @@ class AuthController
             return;
         }
 
+        $role = $this->model->getRole($user['id_utilisateur']);
+
         // 7. Créer la session
-        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_id'] = $user['id_utilisateur'];
         $_SESSION['nom']     = $user['nom'];
         $_SESSION['prenom']  = $user['prenom'];
         $_SESSION['email']   = $user['email'];
-        $_SESSION['role']    = $user['role'];
-
+        $_SESSION['role']    = $role;
 
         flashMessage('success', 'Bienvenue ' . $user['prenom'] . ' !');
         header('Location: index.php?page=dashboard');
