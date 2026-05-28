@@ -44,6 +44,13 @@
                     <p>Start your financial journey</p>
                 </div>
 
+                    <?php $flash = getFlash(); if ($flash): ?>
+                        <div class="flash-alert alert alert-<?= $flash['type'] ?> alert-dismissible">
+                            <?= nettoyer($flash['message']) ?>
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
                 <form action="index.php?page=register&action=submit" method="POST" class="auth-form" id="registerForm">
                     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                     <div class="form-row-2">

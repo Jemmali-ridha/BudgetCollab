@@ -27,3 +27,25 @@ CREATE TABLE utilisateurs (
     date_modification DATETIME   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_util_role FOREIGN KEY (id_role) REFERENCES roles(id_role)
 );
+
+CREATE TABLE categories (
+    id_categorie    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nom_categorie   VARCHAR(100) NOT NULL,
+    icone           VARCHAR(50)  DEFAULT NULL,       -- nom d'icône (ex: 'home', 'car')
+    couleur         VARCHAR(7)   DEFAULT '#607D8B',  -- code hex
+    id_createur     INT UNSIGNED DEFAULT NULL,       -- NULL = catégorie système
+    est_systeme     TINYINT(1)   NOT NULL DEFAULT 0, -- 1 = catégorie par défaut
+    date_creation   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_cat_createur FOREIGN KEY (id_createur) REFERENCES utilisateurs(id_utilisateur) ON DELETE SET NULL
+);
+
+INSERT INTO categories (nom_categorie, icone, couleur, est_systeme) VALUES
+  ('Alimentation',  'shopping-cart', '#4CAF50', 1),
+  ('Transport',     'car',           '#2196F3', 1),
+  ('Logement',      'home',          '#9C27B0', 1),
+  ('Santé',         'heart',         '#F44336', 1),
+  ('Loisirs',       'film',          '#FF9800', 1),
+  ('Études',        'book',          '#00BCD4', 1),
+  ('Vêtements',     'tag',           '#E91E63', 1),
+  ('Épargne',       'piggy-bank',    '#8BC34A', 1),
+  ('Autres',        'more-horizontal','#607D8B', 1);
