@@ -399,7 +399,21 @@ h1, h2, h3, h4, .logo-text {
     color: var(--text-secondary);
     font-size: 0.875rem;
 }
+.back-home {
+    text-align: center;
+    margin-top: 20px;
+}
 
+.back-home a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.back-home a:hover {
+    color: var(--green);
+}
 .auth-page {
     min-height: 100vh;
     display: flex;
