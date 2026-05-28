@@ -121,6 +121,9 @@
                     Already have an account? 
                     <a href="index.php?page=login">Sign in</a>
                 </p>
+                <p class="back-home">
+                    <a href="index.html">← Back to Home</a>
+                </p>
             </div>
         </div>
     </div>
