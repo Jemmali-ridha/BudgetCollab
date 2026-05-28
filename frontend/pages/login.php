@@ -44,7 +44,16 @@
                     <p>Sign in to your account</p>
                 </div>
 
-                <form action="#" method="POST" class="auth-form" id="loginForm">
+                    <?php $flash = getFlash(); if ($flash): ?>
+                        <div class="flash-alert alert alert-<?= $flash['type'] ?> alert-dismissible">
+                            <?= nettoyer($flash['message']) ?>
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?><br>
+
+                <form action="index.php?page=login&action=submit" method="POST" class="auth-form" id="loginForm">
+                    <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                    
                     <div class="form-group">
                         <label for="email">
                             <i class="far fa-envelope"></i>
@@ -59,7 +68,7 @@
                             Password
                         </label>
                         <div class="password-wrapper">
-                            <input type="password" id="password" name="password" required placeholder="••••••••">
+                            <input type="password" id="password" name="mot_de_passe" required placeholder="••••••••">
                             <button type="button" class="toggle-password" data-target="password">
                                 <i class="far fa-eye"></i>
                             </button>
@@ -91,7 +100,7 @@
                     <a href="index.php?page=register">Sign up</a>
                 </p>
                 <p class="back-home">
-                    <a href="index.html">← Back to Home</a>
+                    <a href="index.php?page=view">← Back to Home</a>
                 </p>
             </div>
         </div>

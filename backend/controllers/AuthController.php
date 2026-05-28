@@ -140,7 +140,7 @@ class AuthController
 
         flashMessage(
             'success',
-            'Inscription réussie ! Votre compte est en attente de validation par l\'administrateur.'
+            'Inscription réussie !'
         );
         header('Location: index.php?page=login');
         exit;
