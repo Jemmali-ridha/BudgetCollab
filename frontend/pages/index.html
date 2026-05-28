@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BudgetCollab – Manage Your Budgets, Together</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="..\css\style.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg>
+    </div>
+    <span class="logo-text">Budget <span>Collab</span></span>
+  </a>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <button class="btn-login">Login</button>
+    <button class="btn-register">Register</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge fade-up">✨ New: AI-powered budget insights</div>
+
+  <h1 class="fade-up delay-1">
+    Manage Your Budgets, <span class="italic-orange">Together</span>
+    <span class="green-word">Effortlessly</span>
+  </h1>
+
+  <p class="hero-sub fade-up delay-2">
+    Collaborate with your team or family on shared budgets. Track expenses,
+    set limits, and achieve your financial goals together.
+  </p>
+
+  <div class="hero-actions fade-up delay-3">
+    <button class="btn-cta">Get Started Free</button>
+  </div>
+</section>
+
+<!-- FEATURE CARDS -->
+<section style="max-width:1200px; margin: 0 auto;">
+  <div class="features">
+
+    <div class="feature-card fade-up delay-3">
+      <div class="feature-icon icon-green">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <polyline points="9,12 11,14 15,10"/>
+        </svg>
+      </div>
+      <h3>Smart Budget Tracking</h3>
+      <p>Set budgets by category, track spending in real-time, and get alerts when you're approaching limits.</p>
+    </div>
+
+    <div class="feature-card fade-up delay-4">
+      <div class="feature-icon icon-purple">
+        <svg viewBox="0 0 24 24">
+          <circle cx="9" cy="7" r="3"/>
+          <circle cx="16" cy="8" r="2.5"/>
+          <path d="M3 19c0-3.3 2.7-6 6-6h1"/>
+          <path d="M14 19c0-2.8 2.2-5 5-5"/>
+        </svg>
+      </div>
+      <h3>Collaborative Features</h3>
+      <p>Share budgets with family or team members. See who spent what, when, and stay aligned on financial goals.</p>
+    </div>
+
+    <div class="feature-card fade-up delay-5">
+      <div class="feature-icon icon-amber">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3l7.5 3.5v5c0 4-3 7.5-7.5 9-4.5-1.5-7.5-5-7.5-9V6.5L12 3z"/>
+        </svg>
+      </div>
+      <h3>Secure &amp; Private</h3>
+      <p>Bank-level encryption keeps your financial data safe. We never sell your data to third parties.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 18 18" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="3,9 7,13 15,5"/></svg>
+        </div>
+        <span class="logo-text">Budget <span>Collab</span></span>
+      </a>
+      <p>Collaborative budget management made simple. Track, share, and achieve your financial goals together.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact &amp; Social</h4>
+      <div class="footer-email">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        support@budgetcollab.com
+      </div>
+      <div class="social-icons">
+        <button class="social-btn" aria-label="Twitter">
+          <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+        </button>
+        <button class="social-btn" aria-label="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        </button>
+        <button class="social-btn" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 BudgetCollab. All rights reserved.
+  </div>
+</footer>
+
+<script src="../js/themeToggle.js" ></script>
+</body>
+</html>
