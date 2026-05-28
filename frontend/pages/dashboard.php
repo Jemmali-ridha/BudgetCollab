@@ -81,6 +81,7 @@
                 </div>
             </header>
 
+            <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card stat-card--green">
                     <div class="stat-card-top">
@@ -116,7 +117,10 @@
                 </div>
             </div>
 
+            <!-- Two Columns Layout -->
             <div class="dashboard-two-columns">
+
+                <!-- Left: Budget Progress -->
                 <div class="dashboard-col">
                     <div class="section-card">
                         <div class="section-header">
@@ -127,7 +131,7 @@
                             <div class="budget-progress-item">
                                 <div class="budget-progress-info">
                                     <span class="budget-name">Groceries</span>
-                                    <span class="budget-amount">$450 / $600</span>
+                                    <span class="budget-amount" style="color: var(--green);">$450 / $600</span>
                                 </div>
                                 <div class="progress-bar-container">
                                     <div class="progress-bar-fill" style="width: 75%; background: var(--green);"></div>
@@ -136,7 +140,7 @@
                             <div class="budget-progress-item">
                                 <div class="budget-progress-info">
                                     <span class="budget-name">Transport</span>
-                                    <span class="budget-amount">$280 / $400</span>
+                                    <span class="budget-amount" style="color: var(--amber);">$280 / $400</span>
                                 </div>
                                 <div class="progress-bar-container">
                                     <div class="progress-bar-fill" style="width: 70%; background: var(--amber);"></div>
@@ -145,70 +149,79 @@
                             <div class="budget-progress-item">
                                 <div class="budget-progress-info">
                                     <span class="budget-name">Entertainment</span>
-                                    <span class="budget-amount">$520 / $500</span>
+                                    <span class="budget-amount" style="color: var(--red);">$520 / $500</span>
                                 </div>
                                 <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 104%; background: var(--red);"></div>
+                                    <div class="progress-bar-fill progress-bar-fill--over" style="width: 100%; background: var(--red);"></div>
+                                </div>
+                            </div>
+                            <div class="budget-progress-item">
+                                <div class="budget-progress-info">
+                                    <span class="budget-name">Shopping</span>
+                                    <span class="budget-amount" style="color: var(--indigo);">$180 / $300</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style="width: 60%; background: var(--indigo);"></div>
+                                </div>
+                            </div>
+                            <div class="budget-progress-item">
+                                <div class="budget-progress-info">
+                                    <span class="budget-name">Bills</span>
+                                    <span class="budget-amount" style="color: #8B5CF6;">$340 / $400</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style="width: 85%; background: #8B5CF6;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Right: Spending by Category (Donut Chart) -->
                 <div class="dashboard-col">
                     <div class="section-card">
                         <div class="section-header">
                             <h2>Spending by Category</h2>
                             <a href="#" class="view-all">Details →</a>
                         </div>
-                        <div class="categories-list">
-                            <div class="category-item">
-                                <div class="category-color" style="background: var(--green);"></div>
-                                <span class="category-name">Food & Dining</span>
-                                <span class="category-percent">35%</span>
-                                <div class="category-bar">
-                                    <div class="category-bar-fill" style="width: 35%; background: var(--green);"></div>
-                                </div>
+                        <div class="donut-wrapper">
+                            <canvas id="spendingChart" aria-label="Spending by category donut chart"></canvas>
+                        </div>
+                        <div class="donut-legend">
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-dot" style="background: var(--green);"></span>
+                                <span class="donut-legend-label">Food & Dining</span>
+                                <span class="donut-legend-pct">35%</span>
                             </div>
-                            <div class="category-item">
-                                <div class="category-color" style="background: var(--amber);"></div>
-                                <span class="category-name">Transportation</span>
-                                <span class="category-percent">25%</span>
-                                <div class="category-bar">
-                                    <div class="category-bar-fill" style="width: 25%; background: var(--amber);"></div>
-                                </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-dot" style="background: var(--amber);"></span>
+                                <span class="donut-legend-label">Transportation</span>
+                                <span class="donut-legend-pct">25%</span>
                             </div>
-                            <div class="category-item">
-                                <div class="category-color" style="background: var(--indigo);"></div>
-                                <span class="category-name">Shopping</span>
-                                <span class="category-percent">20%</span>
-                                <div class="category-bar">
-                                    <div class="category-bar-fill" style="width: 20%; background: var(--indigo);"></div>
-                                </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-dot" style="background: var(--indigo);"></span>
+                                <span class="donut-legend-label">Shopping</span>
+                                <span class="donut-legend-pct">20%</span>
                             </div>
-                            <div class="category-item">
-                                <div class="category-color" style="background: var(--red);"></div>
-                                <span class="category-name">Entertainment</span>
-                                <span class="category-percent">12%</span>
-                                <div class="category-bar">
-                                    <div class="category-bar-fill" style="width: 12%; background: var(--red);"></div>
-                                </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-dot" style="background: var(--red);"></span>
+                                <span class="donut-legend-label">Entertainment</span>
+                                <span class="donut-legend-pct">12%</span>
                             </div>
-                            <div class="category-item">
-                                <div class="category-color" style="background: #8B5CF6;"></div>
-                                <span class="category-name">Bills</span>
-                                <span class="category-percent">8%</span>
-                                <div class="category-bar">
-                                    <div class="category-bar-fill" style="width: 8%; background: #8B5CF6;"></div>
-                                </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-dot" style="background: #8B5CF6;"></span>
+                                <span class="donut-legend-label">Bills</span>
+                                <span class="donut-legend-pct">8%</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+            </div><!-- /.dashboard-two-columns -->
         </main>
     </div>
 
+    <!-- Modal New Budget -->
     <div class="modal-overlay" id="budgetModal">
         <div class="modal-container">
             <div class="modal-header">
@@ -220,7 +233,6 @@
                     <label>Budget Name</label>
                     <input type="text" placeholder="e.g., Groceries, Transport...">
                 </div>
-
                 <div class="form-group">
                     <label>Budget Type</label>
                     <div class="selector-group">
@@ -228,7 +240,6 @@
                         <button type="button" class="selector-btn">Shared</button>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>Period</label>
                     <div class="date-range">
@@ -237,12 +248,10 @@
                         <input type="date" placeholder="To">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>Budget Limit ($)</label>
                     <input type="number" placeholder="0.00">
                 </div>
-
                 <div class="form-group">
                     <label>Alert Threshold</label>
                     <div class="alert-buttons">
@@ -252,7 +261,6 @@
                         <button type="button" class="alert-btn">100%</button>
                     </div>
                 </div>
-
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" id="cancelModalBtn">Cancel</button>
                     <button type="submit" class="btn-primary">Create Budget</button>

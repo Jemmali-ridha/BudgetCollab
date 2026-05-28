@@ -1,8 +1,14 @@
+/* ============================================
+   DASHBOARD SPECIFIC STYLES - BudgetCollab
+   ============================================ */
+
+/* App Layout */
 .app-layout {
     display: flex;
     min-height: 100vh;
 }
 
+/* Sidebar */
 .sidebar {
     width: 240px;
     background: var(--bg-surface);
@@ -150,6 +156,7 @@
     padding: 0 32px 32px 32px;
 }
 
+/* Top Bar */
 .top-bar {
     height: 64px;
     display: flex;
@@ -250,17 +257,26 @@
 .trend-up { color: var(--green); }
 .trend-down { color: var(--red); }
 
+/* Two Columns Layout */
 .dashboard-two-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
-    margin-top: 0;
+    align-items: stretch;
 }
 
 .dashboard-col {
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
+.dashboard-col .section-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Section Card */
 .section-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
@@ -291,10 +307,12 @@
     text-decoration: underline;
 }
 
+/* Budget Progress List */
 .budget-progress-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
 }
 
 .budget-progress-item {
@@ -332,53 +350,53 @@
     transition: width 0.3s;
 }
 
-/* Categories List */
-.categories-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.progress-bar-fill--over {
+    background: var(--red);
 }
 
-.category-item {
+/* Donut Chart */
+.donut-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    margin: 0.5rem 0 1rem;
+}
+
+/* Donut Legend - FIXED VERSION */
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.donut-legend-item {
     display: flex;
     align-items: center;
     gap: 12px;
+    width: 100%;
 }
 
-.category-color {
+.donut-legend-dot {
     width: 12px;
     height: 12px;
     border-radius: 3px;
     flex-shrink: 0;
 }
 
-.category-name {
+.donut-legend-label {
     flex: 1;
     font-size: 14px;
     font-weight: 500;
     color: var(--text);
 }
 
-.category-percent {
+.donut-legend-pct {
     font-size: 14px;
     font-weight: 600;
     color: var(--text-secondary);
-    min-width: 45px;
     text-align: right;
-}
-
-.category-bar {
-    width: 100px;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.category-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.3s;
+    min-width: 45px;
 }
 
 /* Modal */
@@ -512,12 +530,6 @@
     margin-top: 24px;
 }
 
-/* Arrow icon in date range */
-.arrow-icon {
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
 /* Responsive */
 @media (max-width: 1024px) {
     .stats-grid { 
@@ -555,15 +567,15 @@
         flex-wrap: wrap; 
     }
     
-    .category-bar {
-        width: 60px;
+    .donut-legend {
+        gap: 10px;
     }
     
-    .category-name {
-        font-size: 13px;
+    .donut-legend-label {
+        font-size: 12px;
     }
     
-    .category-percent {
+    .donut-legend-pct {
         font-size: 12px;
         min-width: 35px;
     }
