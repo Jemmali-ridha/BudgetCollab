@@ -6,7 +6,7 @@
     <title>Sign up - BudgetCollab</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="frontend\css\style.css">
 </head>
 <body class="auth-page">
     <div class="auth-container">
@@ -119,7 +119,7 @@
 
                 <p class="auth-footer">
                     Already have an account? 
-                    <a href="login.html">Sign in</a>
+                    <a href="index.php?page=login">Sign in</a>
                 </p>
                 <p class="back-home">
                     <a href="index.html">← Back to Home</a>
@@ -128,6 +128,6 @@
         </div>
     </div>
 
-    <script src="../js/main.js"></script>
+    <script src="frontend\js\main.js"></script>
 </body>
 </html>
