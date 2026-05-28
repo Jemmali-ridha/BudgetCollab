@@ -3,13 +3,22 @@
 require_once __DIR__ . '/backend/includes/auth.php';
 require_once __DIR__ . '/backend/config/database.php';
 
-$page = $_GET['page'] ?? 'login';
+$page = $_GET['page'] ?? 'view';
 $action = $_GET['action'] ?? '';
 
 
 // — Routage ——————————————————————————————
 
 switch ($page) {
+
+
+    case 'view':
+        require_once __DIR__ . '/backend//controllers/ViewController.php';
+        $ctrl = new ViewController();
+        match($action) {
+            default => $ctrl->Home()
+        };
+        break;
 
     case 'login':
         require_once __DIR__ . '/backend/controllers/AuthController.php';
