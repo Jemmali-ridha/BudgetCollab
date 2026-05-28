@@ -17,6 +17,10 @@
     --radius-md: 12px;
     --radius-lg: 18px;
     --radius-xl: 28px;
+
+    --text: var(--text-primary);
+    --border: var(--border-color);
+    --green-dim: rgba(16, 185, 129, 0.1);
 }
 
 [data-theme="dark"] {

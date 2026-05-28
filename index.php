@@ -20,6 +20,10 @@ switch ($page) {
         };
         break;
 
+    case 'dashboard':   
+        include_once __DIR__ . '/frontend/pages/dashboard.php';
+        break;
+
     case 'login':
         require_once __DIR__ . '/backend/controllers/AuthController.php';
         $ctrl = new AuthController();
