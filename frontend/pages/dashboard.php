@@ -6,8 +6,8 @@
     <title>Dashboard - BudgetCollab</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="frontend/css/style.css">
+    <link rel="stylesheet" href="frontend/css/dashboard.css">
 </head>
 <body class="dashboard-page">
     <div class="app-layout">
@@ -261,6 +261,6 @@
         </div>
     </div>
 
-    <script src="../js/dashboard.js"></script>
+    <script src="frontend/js/dashboard.js"></script>
 </body>
 </html>
