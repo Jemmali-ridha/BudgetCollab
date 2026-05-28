@@ -6,7 +6,7 @@
     <title>BudgetCollab | Collaborative Budget Management</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="frontend\css\style.css">
 </head>
 <body class="landing-page">
     <nav class="landing-nav">
@@ -16,8 +16,8 @@
                 <span class="logo-text">Budget<span class="logo-highlight">Collab</span></span>
             </div>
             <div class="nav-links">
-                <a href="login.html" class="nav-link">Login</a>
-                <a href="register.html" class="btn-primary">Register</a>
+                <a href="index.php?page=login" class="nav-link">Login</a>
+                <a href="index.php?page=register" class="btn-primary">Register</a>
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                     <i class="fas fa-sun toggle-icon" id="toggleIcon"></i>
                     <div class="toggle-knob"></div>
@@ -105,6 +105,6 @@
         <i class="fas fa-question"></i>
     </button>
 
-    <script src="../js/main.js"></script>
+    <script src="frontend\js\main.js"></script>
 </body>
 </html>
