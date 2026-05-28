@@ -44,21 +44,22 @@
                     <p>Start your financial journey</p>
                 </div>
 
-                <form action="#" method="POST" class="auth-form" id="registerForm">
+                <form action="index.php?page=register&action=submit" method="POST" class="auth-form" id="registerForm">
+                    <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                     <div class="form-row-2">
                         <div class="form-group">
                             <label for="firstname">
                                 <i class="far fa-user"></i>
                                 First name
                             </label>
-                            <input type="text" id="firstname" name="firstname" required placeholder="John">
+                            <input type="text" id="firstname" name="nom" required placeholder="John">
                         </div>
                         <div class="form-group">
                             <label for="lastname">
                                 <i class="far fa-user"></i>
                                 Last name
                             </label>
-                            <input type="text" id="lastname" name="lastname" required placeholder="Doe">
+                            <input type="text" id="lastname" name="prenom" required placeholder="Doe">
                         </div>
                     </div>
 
@@ -76,7 +77,7 @@
                             Password
                         </label>
                         <div class="password-wrapper">
-                            <input type="password" id="password" name="password" required placeholder="••••••••">
+                            <input type="password" id="password" name="mot_de_passe" required placeholder="••••••••">
                             <button type="button" class="toggle-password" data-target="password">
                                 <i class="far fa-eye"></i>
                             </button>
@@ -97,13 +98,13 @@
                             <i class="fas fa-check-circle"></i>
                             Confirm password
                         </label>
-                        <input type="password" id="confirm_password" name="confirm_password" required placeholder="••••••••">
+                        <input type="password" id="confirm_password" name="mot_de_passe2" required placeholder="••••••••">
                     </div>
 
                     <label class="checkbox">
                         <input type="checkbox" name="terms" required>
                         <span>I accept the <a href="#" class="link">Terms of Use</a> and <a href="#" class="link">Privacy Policy</a></span>
-                    </label>
+                    </label><br>
 
                     <button type="submit" class="btn-primary btn-block">Create account</button>
                 </form>
@@ -122,7 +123,7 @@
                     <a href="index.php?page=login">Sign in</a>
                 </p>
                 <p class="back-home">
-                    <a href="index.html">← Back to Home</a>
+                    <a href="index.php?page=view">← Back to Home</a>
                 </p>
             </div>
         </div>
