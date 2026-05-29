@@ -69,13 +69,13 @@ switch ($page) {
 
         case 'budgets':
             require_once __DIR__ . '/backend/controllers/BudgetsController.php';
-
             $ctrl = new BudgetsController();
 
-            match($action){
-                default => $ctrl->show()
+            match($action) {
+                'create' => $ctrl->create(),
+                'delete' => $ctrl->delete(),
+                default  => $ctrl->show(),
             };
-
             break;
 
 
