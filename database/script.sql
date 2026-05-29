@@ -49,3 +49,26 @@ INSERT INTO categories (nom_categorie, icone, couleur, est_systeme) VALUES
   ('Vêtements',     'tag',           '#E91E63', 1),
   ('Épargne',       'piggy-bank',    '#8BC34A', 1),
   ('Autres',        'more-horizontal','#607D8B', 1);
+
+CREATE TABLE budgets (
+    id_budget INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    budget_name VARCHAR(150) NOT NULL,
+    description TEXT DEFAULT NULL,
+
+    budget_type ENUM('individual', 'shared') NOT NULL DEFAULT 'individual',
+
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+
+    total_limit DECIMAL(12,3) DEFAULT NULL,  -- NULL = no global limit
+
+    alert_threshold ENUM('50%', '75%', '90%', '100%') DEFAULT '75%',
+
+    created_by INT UNSIGNED NOT NULL,
+
+    status ENUM('active', 'archived', 'closed') NOT NULL DEFAULT 'active',
+
+    CONSTRAINT fk_budget_creator
+        FOREIGN KEY (created_by)
+        REFERENCES utilisateurs(id_utilisateur)
+);
