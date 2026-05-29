@@ -43,10 +43,78 @@ switch ($page) {
         }
         break;
 
-    case 'dashboard':
-        require_once __DIR__ . '/backend/controllers/DashboardController.php';
-        (new DashboardController())->show();
-        break;
+        case 'dashboard':
+            require_once __DIR__ . '/backend/controllers/DashboardController.php';
+
+            $ctrl = new DashboardController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+
+
+        case 'transactions':
+            require_once __DIR__ . '/backend/controllers/TransactionsController.php';
+
+            $ctrl = new TransactionsController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+
+
+        case 'budgets':
+            require_once __DIR__ . '/backend/controllers/BudgetsController.php';
+
+            $ctrl = new BudgetsController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+
+
+        case 'shared-budgets':
+            require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
+
+            $ctrl = new SharedBudgetsController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+
+
+        case 'categories':
+            require_once __DIR__ . '/backend/controllers/CategoryController.php';
+
+            $ctrl = new CategoryController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+
+
+        case 'admin':
+            require_once __DIR__ . '/backend/controllers/AdminController.php';
+
+            $ctrl = new AdminController();
+
+            match($action){
+                default => $ctrl->show()
+            };
+
+            break;
+    
+
 
     case 'logout':
         require_once __DIR__ . '/backend/controllers/AuthController.php';

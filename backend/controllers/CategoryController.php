@@ -11,7 +11,7 @@ class CategoryController
         $this->model = new Category();
     }
 
-    public function index(): void
+    public function show(): void
     {
         $categories = $this->model->all();
 

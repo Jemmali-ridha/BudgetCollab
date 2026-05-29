@@ -13,7 +13,7 @@ class Category
 
     public function all(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM categories ORDER BY id DESC");
+        $stmt = $this->pdo->query("SELECT * FROM categories ORDER BY id_categorie DESC");
         return $stmt->fetchAll();
     }
 
