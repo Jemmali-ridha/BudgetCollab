@@ -53,7 +53,6 @@ INSERT INTO categories (nom_categorie, icone, couleur, est_systeme) VALUES
 CREATE TABLE budgets (
     id_budget INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     budget_name VARCHAR(150) NOT NULL,
-    description TEXT DEFAULT NULL,
 
     budget_type ENUM('individual', 'shared') NOT NULL DEFAULT 'individual',
 
