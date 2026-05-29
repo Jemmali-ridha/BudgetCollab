@@ -149,37 +149,41 @@ require_once __DIR__ . '/../includes/header.php';
                 <h2>Create New Budget</h2>
                 <button class="modal-close" id="closeModalBtn">×</button>
             </div>
-            <form class="modal-form" id="budgetForm">
+            <form class="modal-form" method="POST" action="index.php?page=budgets&action=create">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                <input type="hidden" name="budget_type" id="budgetTypeInput" value="individual">
+                <input type="hidden" name="alert_threshold" id="alertThresholdInput" value="75%">
+
                 <div class="form-group">
                     <label>Budget Name</label>
-                    <input type="text" placeholder="e.g., Groceries, Transport...">
+                    <input type="text" name="budget_name" placeholder="e.g., Groceries, Transport...">
                 </div>
                 <div class="form-group">
                     <label>Budget Type</label>
                     <div class="selector-group">
-                        <button type="button" class="selector-btn active">Individual</button>
-                        <button type="button" class="selector-btn">Shared</button>
+                        <button type="button" class="selector-btn active" data-type="individual">Individual</button>
+                        <button type="button" class="selector-btn" data-type="shared">Shared</button>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Period</label>
                     <div class="date-range">
-                        <input type="date" placeholder="From">
+                        <input type="date" name="start_date">
                         <span>→</span>
-                        <input type="date" placeholder="To">
+                        <input type="date" name="end_date">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Budget Limit ($)</label>
-                    <input type="number" placeholder="0.00">
+                    <input type="number" name="total_limit" placeholder="0.00" step="0.001" min="0">
                 </div>
                 <div class="form-group">
                     <label>Alert Threshold</label>
                     <div class="alert-buttons">
-                        <button type="button" class="alert-btn">50%</button>
-                        <button type="button" class="alert-btn">75%</button>
-                        <button type="button" class="alert-btn">90%</button>
-                        <button type="button" class="alert-btn">100%</button>
+                        <button type="button" class="alert-btn" data-threshold="50%">50%</button>
+                        <button type="button" class="alert-btn active" data-threshold="75%">75%</button>
+                        <button type="button" class="alert-btn" data-threshold="90%">90%</button>
+                        <button type="button" class="alert-btn" data-threshold="100%">100%</button>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -189,6 +193,33 @@ require_once __DIR__ . '/../includes/header.php';
             </form>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.selector-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('budgetTypeInput').value = btn.dataset.type;
+            });
+        });
+
+        // Alert threshold
+        document.querySelectorAll('.alert-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.alert-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('alertThresholdInput').value = btn.dataset.threshold;
+            });
+        });
+
+        // Modal open/close
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('budgetModal').classList.remove('active');
+        });
+        document.getElementById('cancelModalBtn').addEventListener('click', () => {
+            document.getElementById('budgetModal').classList.remove('active');
+        });
+    </script>
 
 
         <?php require_once __DIR__ . '/../includes/footer.php'; ?>
