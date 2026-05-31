@@ -21,6 +21,9 @@ $flash = getFlash();
 <?php if (($_GET['page'] ?? '') === 'shared-budgets'): ?>
     <link rel="stylesheet" href="frontend/css/shared_budgets.css">
 <?php endif; ?>
+<?php if (($_GET['page'] ?? '') === 'categories'): ?>
+    <link rel="stylesheet" href="frontend/css/categories.css">
+<?php endif; ?>
 <body class="dashboard-page">
     <div class="app-layout">
         <aside class="sidebar">
