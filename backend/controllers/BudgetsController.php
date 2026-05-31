@@ -18,7 +18,7 @@ class BudgetsController
         requiertConnexion();
 
         $userId    = $_SESSION['user_id'];
-        $budgets   = $this->model->getByUser($userId);
+        $budgets   = $this->model->getAllWithSpent($userId);
         $pageTitle = "Budgets";
 
         require_once __DIR__ . '/../../frontend/pages/budgets.php';
