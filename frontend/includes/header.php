@@ -13,6 +13,9 @@ $flash = getFlash();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="frontend/css/style.css">
     <link rel="stylesheet" href="frontend/css/dashboard.css">
+    <?php if (($_GET['page'] ?? '') === 'budgets'): ?>
+    <link rel="stylesheet" href="frontend/css/budgets.css">
+<?php endif; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body class="dashboard-page">
