@@ -5,7 +5,6 @@ require_once __DIR__ . '/../includes/header.php';
 $categories = $categories ?? [];
 $flash      = $flash      ?? null;
 
-/* Séparer défaut / custom */
 $defaults = array_filter($categories, fn($c) => !empty($c['est_systeme']));
 $customs  = array_filter($categories, fn($c) =>  empty($c['est_systeme']));
 
@@ -18,6 +17,7 @@ $iconMap = [
     'book'            => 'fas fa-book',
     'tag'             => 'fas fa-tag',
     'more-horizontal' => 'fas fa-ellipsis-h',
+    'piggy-bank'      => 'fas fa-piggy-bank',
     'gas-station'     => 'fas fa-gas-pump',
     'plane'           => 'fas fa-plane',
     'coffee'          => 'fas fa-coffee',
@@ -27,12 +27,13 @@ $iconMap = [
     'wifi'            => 'fas fa-wifi',
     'dollar-sign'     => 'fas fa-dollar-sign',
 ];
-function catEmoji(string $icone, array $map): string
+
+function catIcon(string $icone, array $map): string
 {
-    return $map[$icone] ?? '📂';
+    $class = $map[$icone] ?? 'fas fa-tag';
+    return '<i class="' . $class . '"></i>';
 }
 
-   (à remplacer par de vraies données depuis les transactions si disponibles) */
 $chartLabels = [];
 $chartValues = [];
 foreach ($categories as $cat) {
@@ -40,7 +41,7 @@ foreach ($categories as $cat) {
     $id = (int)($cat['id_categorie'] ?? $cat['id'] ?? 1);
     $chartValues[] = ($cat['total_spent'] ?? ($id * 137 % 1300 + 50));
 }
-arsort($chartValues); // trier décroissant
+arsort($chartValues);
 $sortedLabels = array_values(array_map(fn($k) => $chartLabels[$k], array_keys($chartValues)));
 $sortedValues = array_values($chartValues);
 ?>
@@ -52,7 +53,6 @@ $sortedValues = array_values($chartValues);
         </div>
     <?php endif; ?>
 
-
     <div class="categories-layout">
 
         <div class="cat-left">
@@ -61,7 +61,6 @@ $sortedValues = array_values($chartValues);
                 <div class="cat-section-header">
                     <h2 class="cat-section-title">Default Categories</h2>
                 </div>
-
                 <div class="cat-list">
                     <?php if (empty($defaults)): ?>
                         <div class="cat-empty">No default categories found.</div>
@@ -72,7 +71,7 @@ $sortedValues = array_values($chartValues);
                             $id    = (int)($cat['id_categorie'] ?? $cat['id'] ?? 0);
                         ?>
                         <div class="cat-row">
-                            <div class="cat-icon"><?= catEmoji($icone, $iconMap) ?></div>
+                            <div class="cat-icon"><?= catIcon($icone, $iconMap) ?></div>
                             <div class="cat-info">
                                 <div class="cat-name"><?= $name ?></div>
                                 <span class="cat-badge cat-badge--default">Default</span>
@@ -100,7 +99,6 @@ $sortedValues = array_values($chartValues);
                         <i class="fas fa-plus"></i> Add Category
                     </button>
                 </div>
-
                 <div class="cat-list">
                     <?php if (empty($customs)): ?>
                         <div class="cat-empty">
@@ -114,7 +112,7 @@ $sortedValues = array_values($chartValues);
                             $id    = (int)($cat['id_categorie'] ?? $cat['id'] ?? 0);
                         ?>
                         <div class="cat-row">
-                            <div class="cat-icon"><?= catEmoji($icone, $iconMap) ?></div>
+                            <div class="cat-icon"><?= catIcon($icone, $iconMap) ?></div>
                             <div class="cat-info">
                                 <div class="cat-name"><?= $name ?></div>
                                 <span class="cat-badge cat-badge--custom">Custom</span>
@@ -145,6 +143,7 @@ $sortedValues = array_values($chartValues);
 
         </div>
 
+
         <div class="cat-right">
 
             <div class="chart-card">
@@ -160,23 +159,15 @@ $sortedValues = array_values($chartValues);
 
             <?php if (!empty($categories)): ?>
             <div class="insights-card">
-
                 <?php
-                $topIdx   = array_search(max($sortedValues), $sortedValues);
-                $topLabel = $sortedLabels[$topIdx] ?? '—';
-                $topVal   = max($sortedValues);
-
-                $lowIdx   = array_search(min($sortedValues), $sortedValues);
-                $lowLabel = $sortedLabels[$lowIdx] ?? '—';
-                $lowVal   = min($sortedValues);
-
-                $activeLabel = $sortedLabels[0] ?? '—';
-                $activeTx    = 8; /* Placeholder — à remplacer avec vrai COUNT */
+                $topVal = max($sortedValues);
+                $lowVal = min($sortedValues);
+                $activeTx = 8;
                 ?>
 
                 <div class="insight-row">
                     <div class="insight-icon insight-icon--green">
-                        <?= catEmoji('shopping-cart', $iconMap) ?>
+                        <?= catIcon('shopping-cart', $iconMap) ?>
                     </div>
                     <span class="insight-label">Top spending category</span>
                     <span class="insight-value insight-value--green">
@@ -186,7 +177,7 @@ $sortedValues = array_values($chartValues);
 
                 <div class="insight-row">
                     <div class="insight-icon insight-icon--amber">
-                        <?= catEmoji('book', $iconMap) ?>
+                        <?= catIcon('book', $iconMap) ?>
                     </div>
                     <span class="insight-label">Lowest spending category</span>
                     <span class="insight-value insight-value--amber">
@@ -196,7 +187,7 @@ $sortedValues = array_values($chartValues);
 
                 <div class="insight-row">
                     <div class="insight-icon insight-icon--indigo">
-                        <?= catEmoji('film', $iconMap) ?>
+                        <?= catIcon('film', $iconMap) ?>
                     </div>
                     <span class="insight-label">Most active this week</span>
                     <span class="insight-value insight-value--indigo">
@@ -210,6 +201,7 @@ $sortedValues = array_values($chartValues);
         </div>
 
     </div>
+
 
     <div class="modal-overlay" id="categoryModal" role="dialog" aria-modal="true">
         <div class="modal-container">
