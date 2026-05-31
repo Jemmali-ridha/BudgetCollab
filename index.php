@@ -57,13 +57,14 @@ switch ($page) {
 
         case 'transactions':
             require_once __DIR__ . '/backend/controllers/TransactionsController.php';
-
             $ctrl = new TransactionsController();
 
-            match($action){
-                default => $ctrl->show()
+            match($action) {
+                'create' => $ctrl->create(),
+                'update' => $ctrl->update(),
+                'delete' => $ctrl->delete(),
+                default  => $ctrl->show(),
             };
-
             break;
 
 
