@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/header.php';
 
 function budgetSpent(array $budget): float
 {
-    return (float) ($budget['spent'] ?? 0);
+    return max(0, (float) ($budget['spent'] ?? 0));
 }
 
 function budgetStatus(float $pct): array
