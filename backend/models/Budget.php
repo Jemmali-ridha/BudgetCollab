@@ -31,7 +31,7 @@ class Budget
                 - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
                 FROM budgets b
                 LEFT JOIN transactions t ON t.id_budget = b.id_budget
-                WHERE b.created_by = ? AND b.status = "active"
+                WHERE b.created_by = ?
                 GROUP BY b.id_budget
                 ORDER BY b.start_date DESC
             ');
