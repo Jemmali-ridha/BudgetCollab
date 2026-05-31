@@ -72,6 +72,9 @@ CREATE TABLE budgets (
         REFERENCES utilisateurs(id_utilisateur)
 );
 
+ALTER TABLE budgets
+DROP COLUMN status;
+
 CREATE TABLE transactions (
     id_transaction  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur  INT UNSIGNED NOT NULL,           -- auteur de la transaction
