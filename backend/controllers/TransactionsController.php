@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../models/Transaction.php';
+require_once __DIR__ . '/../models/Budget.php';
+require_once __DIR__ . '/../models/Category.php';
 
 class TransactionsController
 {
@@ -9,15 +11,40 @@ class TransactionsController
 
     public function __construct()
     {
-        global $pdo;
-        $this->model = new Transaction($pdo);
+        $this->model = new Transaction();
     }
 
     public function show(): void
     {
         requiertConnexion();
 
-        $pageTitle    = "Transactions";
+        $userId = $_SESSION['user_id'];
+        $pageTitle = "Transactions";
+
+        // Filters from GET
+        $filters = [
+            'search'    => trim($_GET['search']    ?? ''),
+            'category'  => trim($_GET['category']  ?? ''),
+            'type'      => trim($_GET['type']      ?? ''),
+            'date_from' => trim($_GET['date_from'] ?? ''),
+            'date_to'   => trim($_GET['date_to']   ?? ''),
+        ];
+
+        $transactions = $this->model->getByUser($userId, $filters);
+
+        // Pagination
+        $perPage     = 8;
+        $totalItems  = count($transactions);
+        $totalPages  = max(1, (int) ceil($totalItems / $perPage));
+        $currentPage = max(1, min((int) ($_GET['p'] ?? 1), $totalPages));
+        $offset      = ($currentPage - 1) * $perPage;
+        $paginatedTx = array_slice($transactions, $offset, $perPage);
+
+        // Data for dropdowns
+        $budgetModel   = new Budget();
+        $budgets       = $budgetModel->getByUser($userId);
+        $categoryModel = new Category();
+        $categories    = $categoryModel->all();
 
         require_once __DIR__ . '/../../frontend/pages/transactions.php';
     }
