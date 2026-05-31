@@ -303,3 +303,13 @@
         grid-template-columns: 1fr;
     }
 }
+
+.cat-icon i,
+.insight-icon i {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.insight-icon--green i  { color: var(--green); }
+.insight-icon--amber i  { color: var(--amber); }
+.insight-icon--indigo i { color: var(--indigo); }
