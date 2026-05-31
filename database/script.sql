@@ -71,3 +71,20 @@ CREATE TABLE budgets (
         FOREIGN KEY (created_by)
         REFERENCES utilisateurs(id_utilisateur)
 );
+
+CREATE TABLE transactions (
+    id_transaction  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur  INT UNSIGNED NOT NULL,           -- auteur de la transaction
+    id_budget       INT UNSIGNED NOT NULL,
+    id_categorie    INT UNSIGNED NOT NULL,
+    type_transaction ENUM('revenu','depense') NOT NULL,
+    montant         DECIMAL(12,3) NOT NULL,
+    description     VARCHAR(255)  DEFAULT NULL,
+    date_transaction DATE          NOT NULL,
+    date_creation   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_modification DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tr_util   FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    CONSTRAINT fk_tr_budget FOREIGN KEY (id_budget)      REFERENCES budgets(id_budget),
+    CONSTRAINT fk_tr_cat    FOREIGN KEY (id_categorie)   REFERENCES categories(id_categorie),
+    CONSTRAINT chk_montant  CHECK (montant > 0)
+);
