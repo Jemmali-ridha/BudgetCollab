@@ -84,22 +84,33 @@ class Dashboard
 
     // ── Budget Progress ──────────────────────────────────────────
 
-    public function getBudgetProgress(int $userId, int $limit = 5): array
-    {
-        $stmt = $this->pdo->prepare('
-            SELECT b.id_budget, b.budget_name, b.total_limit,
-                COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0)
-              - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
-            FROM budgets b
-            LEFT JOIN transactions t ON t.id_budget = b.id_budget
-            WHERE b.created_by = ?
-            GROUP BY b.id_budget
-            ORDER BY spent DESC
-            LIMIT ?
-        ');
-        $stmt->execute([$userId, $limit]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+public function getBudgetProgress(int $userId, int $limit = 5): array
+{
+    $stmt = $this->pdo->prepare('
+        SELECT b.id_budget, b.budget_name, b.total_limit, b.budget_type,
+            COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0)
+          - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
+        FROM budgets b
+        LEFT JOIN transactions t ON t.id_budget = b.id_budget
+        WHERE 
+           (
+              b.created_by = :userId
+              OR EXISTS (
+                  SELECT 1 FROM budget_members bm
+                  WHERE bm.id_budget = b.id_budget AND bm.id_utilisateur = :userId2
+              )
+          )
+        GROUP BY b.id_budget
+        ORDER BY spent DESC
+        LIMIT :limit
+    ');
+    $stmt->execute([
+        ':userId'  => $userId,
+        ':userId2' => $userId,
+        ':limit'   => $limit,
+    ]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     // ── Spending by Category ─────────────────────────────────────
 

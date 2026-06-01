@@ -131,25 +131,6 @@ class SharedBudgetsController
         exit;
     }
     
-    private function getPendingInvites(int $userId): array
-    {
-        $pdo = getDB();
-        $stmt = $pdo->prepare('
-            SELECT i.*, 
-                   b.budget_name, 
-                   b.total_limit,
-                   u.nom as inviter_nom, 
-                   u.prenom as inviter_prenom,
-                   (SELECT COUNT(*) FROM budget_members bm WHERE bm.id_budget = i.id_budget) as member_count
-            FROM invitations i
-            JOIN budgets b ON i.id_budget = b.id_budget
-            JOIN utilisateurs u ON i.id_invitant = u.id_utilisateur
-            WHERE i.id_invite = ? AND i.statut = "pending" AND i.date_expiration > NOW()
-            ORDER BY i.date_creation DESC
-        ');
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
     
     public function accept(): void
     {
@@ -200,28 +181,7 @@ class SharedBudgetsController
         exit;
     }
     
-    private function getRecentActivity(int $userId): array
-    {
-        $pdo = getDB();
-        $stmt = $pdo->prepare('
-            SELECT t.*, 
-                   u.nom, u.prenom,
-                   b.budget_name,
-                   CASE 
-                       WHEN t.type_transaction = "depense" THEN "a ajouté une dépense"
-                       ELSE "a ajouté un revenu"
-                   END as action_label
-            FROM transactions t
-            JOIN budgets b ON t.id_budget = b.id_budget
-            JOIN utilisateurs u ON t.id_utilisateur = u.id_utilisateur
-            WHERE b.budget_type = "shared" 
-               OR b.id_budget IN (SELECT id_budget FROM budget_members WHERE id_utilisateur = ?)
-            ORDER BY t.date_creation DESC
-            LIMIT 10
-        ');
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+
     public function delete(): void
 {
     requiertConnexion();
