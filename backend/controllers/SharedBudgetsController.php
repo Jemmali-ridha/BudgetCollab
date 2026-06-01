@@ -2,23 +2,39 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../models/Budget.php';
+<<<<<<< HEAD
 require_once __DIR__ . '/../models/User.php';
+=======
+require_once __DIR__ . '/../models/Invitation.php';
+
+>>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
 
 class SharedBudgetsController
 {
     private Budget $model;
+<<<<<<< HEAD
     private User $userModel;
+=======
+    private Invitation $Invitation;
+
+>>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
 
     public function __construct()
     {
         $this->model = new Budget(getDB());
+<<<<<<< HEAD
         $this->userModel = new User();
+=======
+        $this->Invitation = new Invitation(getDB());
+
+>>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
     }
 
     public function show(): void
     {
         requiertConnexion();
 
+<<<<<<< HEAD
         $userId        = $_SESSION['user_id'];
         $sharedBudgets = $this->model->getSharedWithSpent($userId);
         
@@ -28,6 +44,16 @@ class SharedBudgetsController
         $pageTitle     = "Shared Budgets";
         $pendingInvites = $this->getPendingInvites($userId);
         $recentActivity = $this->getRecentActivity($userId);
+=======
+        $userId = $_SESSION['user_id'];
+
+        $sharedBudgets  = $this->model->getSharedWithSpent($userId);
+        $recentActivity = $this->model->getRecentActivityByUser($userId);
+        $pendingInvites = $this->Invitation->getPendingByUser($userId);
+
+        $flash          = getFlash();
+        $pageTitle      = "Shared Budgets";
+>>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
 
         require_once __DIR__ . '/../../frontend/pages/shared_budgets.php';
     }

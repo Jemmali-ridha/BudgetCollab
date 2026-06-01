@@ -61,13 +61,22 @@ function getAvatarColor($id) {
         </div>
 
         <div class="invitation-banner__actions">
+<<<<<<< HEAD
             <a href="index.php?page=shared-budgets&action=accept-token&token=<?= htmlspecialchars($invite['token']) ?>"
                class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
             <button class="btn-decline" data-decline-invite data-invite-id="<?= (int)($invite['id_invitation'] ?? 0) ?>">
+=======
+            <a href="index.php?page=invitations&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
+            class="btn-accept">
+                <i class="fas fa-check"></i> Accept
+            </a>
+            <a href="index.php?page=invitations&action=decline&id=<?= (int)$invite['id_invitation'] ?>"
+            class="btn-decline">
+>>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
                 <i class="fas fa-times"></i> Decline
-            </button>
+            </a>
         </div>
 
     </div>
