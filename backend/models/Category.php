@@ -17,20 +17,18 @@ class Category
         return $stmt->fetchAll();
     }
 
-    public function Custom_category(int $userId): array
+    public function getCustomCategories(int $userId): array
     {
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM categories
-            WHERE id_createur = :user_id
+            WHERE id_createur = ?
             ORDER BY id_categorie DESC
         ");
 
-        $stmt->execute([
-            ':user_id' => $userId
-        ]);
+        $stmt->execute([$userId]);
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function find(int $id): ?array

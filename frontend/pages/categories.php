@@ -6,7 +6,7 @@ $categories = $categories ?? [];
 $flash      = $flash      ?? null;
 
 $defaults = array_filter($categories, fn($c) => !empty($c['est_systeme']));
-$customs  = array_filter($categories, fn($c) =>  empty($c['est_systeme']));
+$customs  = array_filter($customs, fn($c) =>  empty($c['est_systeme']));
 
 $iconMap = [
     'shopping-cart'   => 'fas fa-shopping-cart',

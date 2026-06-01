@@ -14,6 +14,8 @@ class CategoryController
     public function show(): void
     {
         $categories = $this->model->all();
+        $userId = $_SESSION['user_id'];
+        $customs= $this->model->getCustomCategories($userId);
 
         $pageTitle = "Categories";
         require_once __DIR__ . '/../../frontend/pages/categories.php';
