@@ -10,6 +10,71 @@ class Budget
         $this->pdo = getDB();
     }
 
+    public function getSpent(int $budgetId): float
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT COALESCE(SUM(montant), 0) as spent
+            FROM transactions
+            WHERE id_budget = ? AND type_transaction = "depense"
+        ');
+        $stmt->execute([$budgetId]);
+        return (float) $stmt->fetch()['spent'];
+    }
+
+        public function getAllWithSpent(int $userId): array
+        {
+            $stmt = $this->pdo->prepare('
+                SELECT b.*,
+                    COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0) AS total_depense,
+                    COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS total_revenu,
+                    COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0)
+                - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
+                FROM budgets b
+                LEFT JOIN transactions t ON t.id_budget = b.id_budget
+                WHERE b.created_by = ? AND b.budget_type = "individual"
+                GROUP BY b.id_budget
+                ORDER BY b.start_date DESC
+            ');
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function getSharedWithSpent(int $userId): array
+        {
+            $stmt = $this->pdo->prepare('
+                SELECT b.*,
+                    COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0)
+                - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
+                FROM budgets b
+                LEFT JOIN transactions t ON t.id_budget = b.id_budget
+                WHERE b.created_by = ? AND b.budget_type = "shared"
+                GROUP BY b.id_budget
+                ORDER BY b.start_date DESC
+            ');
+            $stmt->execute([$userId]);
+            $budgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Fetch members for each shared budget
+            foreach ($budgets as &$budget) {
+                $budget['members'] = $this->getMembersByBudget($budget['id_budget']);
+            }
+
+            return $budgets;
+        }
+
+        private function getMembersByBudget(int $budgetId): array
+        {
+            $stmt = $this->pdo->prepare('
+                SELECT u.id_utilisateur, u.nom, u.prenom
+                FROM transactions t
+                JOIN utilisateurs u ON t.id_utilisateur = u.id_utilisateur
+                WHERE t.id_budget = ?
+                GROUP BY u.id_utilisateur
+            ');
+            $stmt->execute([$budgetId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
     public function create(array $data): bool
     {
         $stmt = $this->pdo->prepare('
