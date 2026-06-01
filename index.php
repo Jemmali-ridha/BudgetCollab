@@ -80,16 +80,17 @@ switch ($page) {
             break;
 
 
-        case 'shared-budgets':
-            require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
+case 'shared-budgets':
+    require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
+    $ctrl = new SharedBudgetsController();
 
-            $ctrl = new SharedBudgetsController();
-
-            match($action){
-                default => $ctrl->show()
-            };
-
-            break;
+    match($action){
+        'invite'       => $ctrl->invite(),
+        'accept-token' => $ctrl->accept(),
+        'decline'      => $ctrl->decline(),
+        default        => $ctrl->show()
+    };
+    break;
 
 
         case 'categories':
@@ -114,6 +115,16 @@ switch ($page) {
             };
 
             break;
+
+        case 'profile':
+            require_once __DIR__ . '/backend/controllers/ProfileController.php';
+            $ctrl = new ProfileController();
+            match($action) {
+               'update' => $ctrl->update(),
+               'delete' => $ctrl->delete(),
+                default  => $ctrl->show(),
+    };
+    break;
     
 
 

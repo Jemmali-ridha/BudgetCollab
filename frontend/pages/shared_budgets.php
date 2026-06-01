@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../includes/header.php';
 
 function sbBarColor(float $pct): string
@@ -17,6 +18,13 @@ function sbCardAccent(int $index): string
 $sharedBudgets  = $sharedBudgets  ?? [];
 $pendingInvites = $pendingInvites ?? [];
 $recentActivity = $recentActivity ?? [];
+$allUsers = $allUsers ?? [];
+
+// Fonction helper pour la couleur d'avatar
+function getAvatarColor($id) {
+    $colors = ['#10B981', '#6366F1', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899'];
+    return $colors[$id % count($colors)];
+}
 ?>
     <?php if (!empty($flash)): ?>
         <div class="flash-message flash-message--<?= htmlspecialchars($flash['type']) ?>">
@@ -39,7 +47,7 @@ $recentActivity = $recentActivity ?? [];
             <div class="invitation-banner__title">Budget Invitation</div>
             <div class="invitation-banner__text">
                 <strong><?= htmlspecialchars(($invite['inviter_prenom'] ?? '') . ' ' . ($invite['inviter_nom'] ?? '')) ?></strong>
-                invited you to join
+                vous a invité à rejoindre
                 <a href="#">"<?= htmlspecialchars($invite['budget_name'] ?? '') ?>"</a>
             </div>
             <div class="invitation-banner__meta">
@@ -53,11 +61,11 @@ $recentActivity = $recentActivity ?? [];
         </div>
 
         <div class="invitation-banner__actions">
-            <a href="index.php?page=shared-budgets&action=accept&id=<?= (int)($invite['id_budget'] ?? 0) ?>"
+            <a href="index.php?page=shared-budgets&action=accept-token&token=<?= htmlspecialchars($invite['token']) ?>"
                class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
-            <button class="btn-decline" data-decline-invite>
+            <button class="btn-decline" data-decline-invite data-invite-id="<?= (int)($invite['id_invitation'] ?? 0) ?>">
                 <i class="fas fa-times"></i> Decline
             </button>
         </div>
@@ -65,7 +73,9 @@ $recentActivity = $recentActivity ?? [];
     </div>
     <?php endforeach; ?>
 
-    <h2 class="section-title">Your Shared Budgets</h2>
+    <div class="shared-budgets-header">
+        <h2 class="section-title">Your Shared Budgets</h2>
+    </div>
 
     <div class="shared-grid">
 
@@ -85,8 +95,18 @@ $recentActivity = $recentActivity ?? [];
             ?>
             <div class="shared-card shared-card<?= $accent ?>">
 
-                <div class="shared-card__name">
-                    <?= htmlspecialchars($budget['budget_name']) ?>
+                <div class="shared-card__header">
+                    <div class="shared-card__name">
+                        <?= htmlspecialchars($budget['budget_name']) ?>
+                    </div>
+                    <button
+                        class="btn-invite-card"
+                        data-budget-id="<?= (int)$budget['id_budget'] ?>"
+                        data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
+                        title="Inviter un membre"
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
 
                 <?php if (!empty($members)): ?>
@@ -136,6 +156,7 @@ $recentActivity = $recentActivity ?? [];
         <?php endif; ?>
 
     </div>
+
     <?php if (!empty($recentActivity)): ?>
     <h2 class="section-title">Recent Activity</h2>
 
@@ -188,6 +209,104 @@ $recentActivity = $recentActivity ?? [];
         <?php endforeach; ?>
     </div>
     <?php endif; ?>
+
+
+<div id="inviteModal" class="invite-modal" role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle" hidden>
+    <div class="invite-modal__backdrop"></div>
+    <div class="invite-modal__panel">
+
+        <div class="invite-modal__header">
+            <h3 class="invite-modal__title" id="inviteModalTitle">
+                <i class="fas fa-user-plus"></i>
+                Inviter des membres
+            </h3>
+            <button class="invite-modal__close" id="inviteModalClose" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="invite-modal__body">
+            <p class="invite-modal__desc">
+                Sélectionnez les utilisateurs à inviter pour rejoindre le budget
+                <strong id="inviteModalBudgetName"></strong>.
+            </p>
+
+            <form method="POST" action="index.php?page=shared-budgets&action=invite" id="inviteForm">
+                <input type="hidden" name="budget_id" id="inviteModalBudgetId">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+
+                <div class="invite-modal__field">
+                    <label class="invite-modal__label">
+                        <i class="fas fa-users"></i> Utilisateurs à inviter
+                    </label>
+                    
+                    <div class="users-list-container">
+                        <div class="users-search">
+                            <i class="fas fa-search"></i>
+                            <input 
+                                type="text" 
+                                id="usersSearchInput" 
+                                placeholder="Rechercher un utilisateur..."
+                                class="users-search-input"
+                            >
+                        </div>
+                        
+                        <div class="users-checkbox-list" id="usersCheckboxList">
+                            <?php if (empty($allUsers)): ?>
+                                <div class="users-empty">Aucun utilisateur trouvé.</div>
+                            <?php else: ?>
+                                <?php 
+                                $currentUserId = $_SESSION['user_id'] ?? 0;
+                                foreach ($allUsers as $user): 
+                                    if ($user['id_utilisateur'] == $currentUserId) continue;
+                                ?>
+                                <label class="user-checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        name="users[]" 
+                                        value="<?= (int)$user['id_utilisateur'] ?>"
+                                        class="user-checkbox"
+                                    >
+                                    <div class="user-checkbox-avatar" style="background: <?= getAvatarColor($user['id_utilisateur']) ?>;">
+                                        <?= strtoupper(substr($user['prenom'] ?? 'U', 0, 1) . substr($user['nom'] ?? 'U', 0, 1)) ?>
+                                    </div>
+                                    <div class="user-checkbox-info">
+                                        <span class="user-checkbox-name">
+                                            <?= htmlspecialchars(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? '')) ?>
+                                        </span>
+                                        <span class="user-checkbox-email">
+                                            <?= htmlspecialchars($user['email'] ?? '') ?>
+                                        </span>
+                                    </div>
+                                </label>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="users-select-actions">
+                            <button type="button" class="users-select-all-btn" id="selectAllUsers">
+                                <i class="fas fa-check-square"></i> Tout sélectionner
+                            </button>
+                            <button type="button" class="users-deselect-all-btn" id="deselectAllUsers">
+                                <i class="fas fa-square"></i> Tout désélectionner
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invite-modal__actions">
+                    <button type="button" class="invite-modal__btn invite-modal__btn--cancel" id="inviteModalCancel">
+                        Annuler
+                    </button>
+                    <button type="submit" class="invite-modal__btn invite-modal__btn--submit">
+                        <i class="fas fa-paper-plane"></i> Envoyer les invitations
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
 
 
 <script src="frontend/js/shared_budgets.js"></script>
