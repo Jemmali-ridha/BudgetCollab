@@ -53,13 +53,14 @@ $recentActivity = $recentActivity ?? [];
         </div>
 
         <div class="invitation-banner__actions">
-            <a href="index.php?page=shared-budgets&action=accept&id=<?= (int)($invite['id_budget'] ?? 0) ?>"
-               class="btn-accept">
+            <a href="index.php?page=invitations&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
+            class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
-            <button class="btn-decline" data-decline-invite>
+            <a href="index.php?page=invitations&action=decline&id=<?= (int)$invite['id_invitation'] ?>"
+            class="btn-decline">
                 <i class="fas fa-times"></i> Decline
-            </button>
+            </a>
         </div>
 
     </div>

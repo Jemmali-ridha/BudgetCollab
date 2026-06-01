@@ -42,19 +42,24 @@ class Budget
         public function getSharedWithSpent(int $userId): array
         {
             $stmt = $this->pdo->prepare('
-                SELECT b.*,
+                SELECT DISTINCT
+                    b.*,
                     COALESCE(SUM(CASE WHEN t.type_transaction = "depense" THEN t.montant ELSE 0 END), 0)
-                - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu"  THEN t.montant ELSE 0 END), 0) AS spent
+                    - COALESCE(SUM(CASE WHEN t.type_transaction = "revenu" THEN t.montant ELSE 0 END), 0) AS spent
                 FROM budgets b
-                LEFT JOIN transactions t ON t.id_budget = b.id_budget
-                WHERE b.created_by = ? AND b.budget_type = "shared"
+                INNER JOIN budget_members bm
+                    ON bm.id_budget = b.id_budget
+                LEFT JOIN transactions t
+                    ON t.id_budget = b.id_budget
+                WHERE bm.id_utilisateur = ?
+                AND b.budget_type = "shared"
                 GROUP BY b.id_budget
                 ORDER BY b.start_date DESC
             ');
+
             $stmt->execute([$userId]);
             $budgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Fetch members for each shared budget
             foreach ($budgets as &$budget) {
                 $budget['members'] = $this->getMembersByBudget($budget['id_budget']);
             }
@@ -72,6 +77,35 @@ class Budget
                 GROUP BY u.id_utilisateur
             ');
             $stmt->execute([$budgetId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function getRecentActivityByUser(int $userId, int $limit = 10): array
+        {
+            $stmt = $this->pdo->prepare('
+                SELECT
+                    t.montant,
+                    t.type_transaction,
+                    t.description,
+                    t.date_creation,
+                    b.budget_name,
+                    u.nom,
+                    u.prenom
+                FROM transactions t
+                JOIN budgets b
+                    ON t.id_budget = b.id_budget
+                JOIN utilisateurs u
+                    ON t.id_utilisateur = u.id_utilisateur
+                JOIN budget_members bm
+                    ON b.id_budget = bm.id_budget
+                WHERE bm.id_utilisateur = ?
+                AND b.budget_type = "shared"
+                ORDER BY t.date_creation DESC
+                LIMIT ?
+            ');
+
+            $stmt->execute([$userId, $limit]);
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -99,7 +133,7 @@ class Budget
     {
         $stmt = $this->pdo->prepare('
             SELECT * FROM budgets 
-            WHERE created_by = ? AND status = "active"
+            WHERE created_by = ?
             ORDER BY start_date DESC
         ');
         $stmt->execute([$userId]);

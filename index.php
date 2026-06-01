@@ -91,6 +91,18 @@ switch ($page) {
 
             break;
 
+        case 'invitations':
+            require_once __DIR__ . '/backend/controllers/InvitationController.php';
+            $ctrl = new InvitationController();
+
+            match($action) {
+                'send'    => $ctrl->send(),
+                'accept'  => $ctrl->accept(),
+                'decline' => $ctrl->decline(),
+                default   => header('Location: index.php?page=shared-budgets'),
+            };
+            break;
+
 
         case 'categories':
             require_once __DIR__ . '/backend/controllers/CategoryController.php';
