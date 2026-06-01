@@ -41,13 +41,43 @@ class TransactionsController
         $paginatedTx = array_slice($transactions, $offset, $perPage);
 
         // Data for dropdowns
-        $budgetModel   = new Budget();
-        $budgets       = $budgetModel->getByUser($userId);
-        $categoryModel = new Category();
-        $categories    = $categoryModel->all();
+        $budgets    = $this->getBudgetsForUser($userId);
+        $categories = $this->getCategoriesForUser($userId);
 
         require_once __DIR__ . '/../../frontend/pages/transactions.php';
     }
+
+    private function getCategoriesForUser(int $userId): array
+{
+    $stmt = getDB()->prepare('
+        SELECT id_categorie, nom_categorie, couleur, icone, est_systeme
+        FROM categories
+        WHERE est_systeme = 1
+           OR id_createur = ?
+        ORDER BY est_systeme DESC, nom_categorie ASC
+    ');
+    $stmt->execute([$userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+private function getBudgetsForUser(int $userId): array
+{
+    $stmt = getDB()->prepare('
+        SELECT b.id_budget, b.budget_name, b.budget_type
+        FROM budgets b
+        WHERE
+           (
+              b.created_by = :userId
+              OR EXISTS (
+                  SELECT 1 FROM budget_members bm
+                  WHERE bm.id_budget = b.id_budget AND bm.id_utilisateur = :userId2
+              )
+          )
+        ORDER BY b.budget_type ASC, b.budget_name ASC
+    ');
+    $stmt->execute([':userId' => $userId, ':userId2' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function create(): void
     {

@@ -258,18 +258,56 @@ function avatarColor(string $name): string {
                     <label>Category</label>
                     <select name="id_categorie" class="tx-select tx-select--full" required>
                         <option value="">Select category...</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= $cat['id_categorie'] ?>"><?= htmlspecialchars($cat['nom_categorie']) ?></option>
-                        <?php endforeach; ?>
+                        <?php
+                        $system = array_filter($categories, fn($c) => $c['est_systeme'] ?? false);
+                        $custom = array_filter($categories, fn($c) => !($c['est_systeme'] ?? false));
+                        ?>
+                        <?php if (!empty($system)): ?>
+                            <optgroup label="General">
+                                <?php foreach ($system as $cat): ?>
+                                    <option value="<?= $cat['id_categorie'] ?>">
+                                        <?= htmlspecialchars($cat['nom_categorie']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+                        <?php if (!empty($custom)): ?>
+                            <optgroup label="My Categories">
+                                <?php foreach ($custom as $cat): ?>
+                                    <option value="<?= $cat['id_categorie'] ?>">
+                                        <?= htmlspecialchars($cat['nom_categorie']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Budget</label>
                     <select name="id_budget" class="tx-select tx-select--full" required>
                         <option value="">Select budget...</option>
-                        <?php foreach ($budgets as $b): ?>
-                            <option value="<?= $b['id_budget'] ?>"><?= htmlspecialchars($b['budget_name']) ?></option>
-                        <?php endforeach; ?>
+                        <?php
+                        $individual = array_filter($budgets, fn($b) => $b['budget_type'] === 'individual');
+                        $shared     = array_filter($budgets, fn($b) => $b['budget_type'] === 'shared');
+                        ?>
+                        <?php if (!empty($individual)): ?>
+                            <optgroup label="My Budgets">
+                                <?php foreach ($individual as $b): ?>
+                                    <option value="<?= $b['id_budget'] ?>">
+                                        <?= htmlspecialchars($b['budget_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
+                        <?php if (!empty($shared)): ?>
+                            <optgroup label="Shared Budgets">
+                                <?php foreach ($shared as $b): ?>
+                                    <option value="<?= $b['id_budget'] ?>">
+                                        <?= htmlspecialchars($b['budget_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endif; ?>
                     </select>
                 </div>
             </div>
