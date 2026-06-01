@@ -21,7 +21,7 @@ $recentActivity = $recentActivity ?? [];
 $allUsers = $allUsers ?? [];
 $currentUserId = $_SESSION['user_id'] ?? 0;
 
-// Fonction helper pour la couleur d'avatar
+// Helper function for avatar color
 function getAvatarColor($id) {
     $colors = ['#10B981', '#6366F1', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899'];
     return $colors[$id % count($colors)];
@@ -48,7 +48,7 @@ function getAvatarColor($id) {
             <div class="invitation-banner__title">Budget Invitation</div>
             <div class="invitation-banner__text">
                 <strong><?= htmlspecialchars(($invite['inviter_prenom'] ?? '') . ' ' . ($invite['inviter_nom'] ?? '')) ?></strong>
-                vous a invité à rejoindre
+                invited you to join
                 <a href="#">"<?= htmlspecialchars($invite['budget_name'] ?? '') ?>"</a>
             </div>
             <div class="invitation-banner__meta">
@@ -106,7 +106,7 @@ function getAvatarColor($id) {
                             <a href="index.php?page=shared-budgets&action=delete&id=<?= (int)$budget['id_budget'] ?>"
                                class="btn-delete-card"
                                data-confirm="Delete this shared budget? All data will be lost. This action cannot be undone."
-                               title="Supprimer ce budget">
+                               title="Delete this budget">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         <?php endif; ?>
@@ -114,7 +114,7 @@ function getAvatarColor($id) {
                             class="btn-invite-card"
                             data-budget-id="<?= (int)$budget['id_budget'] ?>"
                             data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
-                            title="Inviter un membre"
+                            title="Invite a member"
                         >
                             <i class="fas fa-plus"></i>
                         </button>
@@ -228,6 +228,7 @@ function getAvatarColor($id) {
     <?php endif; ?>
 
 
+<!-- Invite Modal -->
 <div id="inviteModal" class="invite-modal" role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle" hidden>
     <div class="invite-modal__backdrop"></div>
     <div class="invite-modal__panel">
@@ -235,16 +236,16 @@ function getAvatarColor($id) {
         <div class="invite-modal__header">
             <h3 class="invite-modal__title" id="inviteModalTitle">
                 <i class="fas fa-user-plus"></i>
-                Inviter des membres
+                Invite Members
             </h3>
-            <button class="invite-modal__close" id="inviteModalClose" aria-label="Fermer">
+            <button class="invite-modal__close" id="inviteModalClose" aria-label="Close">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <div class="invite-modal__body">
             <p class="invite-modal__desc">
-                Sélectionnez les utilisateurs à inviter pour rejoindre le budget
+                Select users to invite to join the budget
                 <strong id="inviteModalBudgetName"></strong>.
             </p>
 
@@ -254,7 +255,7 @@ function getAvatarColor($id) {
 
                 <div class="invite-modal__field">
                     <label class="invite-modal__label">
-                        <i class="fas fa-users"></i> Utilisateurs à inviter
+                        <i class="fas fa-users"></i> Users to invite
                     </label>
                     
                     <div class="users-list-container">
@@ -263,14 +264,14 @@ function getAvatarColor($id) {
                             <input 
                                 type="text" 
                                 id="usersSearchInput" 
-                                placeholder="Rechercher un utilisateur..."
+                                placeholder="Search users..."
                                 class="users-search-input"
                             >
                         </div>
                         
                         <div class="users-checkbox-list" id="usersCheckboxList">
                             <?php if (empty($allUsers)): ?>
-                                <div class="users-empty">Aucun utilisateur trouvé.</div>
+                                <div class="users-empty">No users found.</div>
                             <?php else: ?>
                                 <?php 
                                 $currentUserId = $_SESSION['user_id'] ?? 0;
@@ -302,10 +303,10 @@ function getAvatarColor($id) {
                         
                         <div class="users-select-actions">
                             <button type="button" class="users-select-all-btn" id="selectAllUsers">
-                                <i class="fas fa-check-square"></i> Tout sélectionner
+                                <i class="fas fa-check-square"></i> Select All
                             </button>
                             <button type="button" class="users-deselect-all-btn" id="deselectAllUsers">
-                                <i class="fas fa-square"></i> Tout désélectionner
+                                <i class="fas fa-square"></i> Deselect All
                             </button>
                         </div>
                     </div>
@@ -313,10 +314,10 @@ function getAvatarColor($id) {
 
                 <div class="invite-modal__actions">
                     <button type="button" class="invite-modal__btn invite-modal__btn--cancel" id="inviteModalCancel">
-                        Annuler
+                        Cancel
                     </button>
                     <button type="submit" class="invite-modal__btn invite-modal__btn--submit">
-                        <i class="fas fa-paper-plane"></i> Envoyer les invitations
+                        <i class="fas fa-paper-plane"></i> Send Invitations
                     </button>
                 </div>
             </form>
