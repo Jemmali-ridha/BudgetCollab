@@ -11,15 +11,32 @@ class CategoryController
         $this->model = new Category();
     }
 
-    public function show(): void
-    {
-        $categories = $this->model->all();
-        $userId = $_SESSION['user_id'];
-        $customs= $this->model->getCustomCategories($userId);
+        public function show(): void
+        {
+            requiertConnexion();
 
-        $pageTitle = "Categories";
-        require_once __DIR__ . '/../../frontend/pages/categories.php';
-    }
+            $userId     = $_SESSION['user_id'];
+            $categories = $this->model->all();
+            $customs    = $this->model->getCustomCategories($userId);
+            $spending   = $this->model->getSpendingByCategory($userId);
+            $mostActive = $this->model->getMostActiveThisWeek($userId);
+
+            // Build chart data
+            $spending = array_filter($spending, fn($c) => (float)$c['total'] > 0);
+            $spending = array_values($spending);
+
+            $sortedLabels = array_column($spending, 'nom_categorie');
+            $sortedValues = array_column($spending, 'total');
+            $sortedColors = array_column($spending, 'couleur');
+
+            $topCat = !empty($spending) ? $spending[0] : null;
+            $lowCat = !empty($spending) ? end($spending)  : null;
+
+            $flash     = getFlash();
+            $pageTitle = "Categories";
+
+            require_once __DIR__ . '/../../frontend/pages/categories.php';
+        }
 
     public function create(): void
     {

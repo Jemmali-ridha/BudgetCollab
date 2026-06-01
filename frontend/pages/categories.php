@@ -34,16 +34,10 @@ function catIcon(string $icone, array $map): string
     return '<i class="' . $class . '"></i>';
 }
 
-$chartLabels = [];
-$chartValues = [];
-foreach ($categories as $cat) {
-    $chartLabels[] = htmlspecialchars($cat['nom_categorie'] ?? $cat['name'] ?? '');
-    $id = (int)($cat['id_categorie'] ?? $cat['id'] ?? 1);
-    $chartValues[] = ($cat['total_spent'] ?? ($id * 137 % 1300 + 50));
-}
-arsort($chartValues);
-$sortedLabels = array_values(array_map(fn($k) => $chartLabels[$k], array_keys($chartValues)));
-$sortedValues = array_values($chartValues);
+$spending     = $spending ?? [];
+$sortedLabels = array_column($spending, 'nom_categorie');
+$sortedValues = array_map('floatval', array_column($spending, 'total'));
+$sortedColors = array_column($spending, 'couleur');
 ?>
 
     <?php if (!empty($flash)): ?>
@@ -157,46 +151,54 @@ $sortedValues = array_values($chartValues);
                 </div>
             </div>
 
-            <?php if (!empty($categories)): ?>
-            <div class="insights-card">
-                <?php
-                $topVal = max($sortedValues);
-                $lowVal = min($sortedValues);
-                $activeTx = 8;
-                ?>
+            <?php if (!empty($spending)): 
+    $topCat = $spending[0];
+    $lowCat = end($spending);
+    reset($spending);
+?>
+<div class="insights-card">
 
-                <div class="insight-row">
-                    <div class="insight-icon insight-icon--green">
-                        <?= catIcon('shopping-cart', $iconMap) ?>
-                    </div>
-                    <span class="insight-label">Top spending category</span>
-                    <span class="insight-value insight-value--green">
-                        $<?= number_format((float)$topVal, 0, '.', ',') ?>
-                    </span>
-                </div>
+    <div class="insight-row">
+        <div class="insight-icon insight-icon--green">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <span class="insight-label">
+            Top spending — <?= htmlspecialchars($topCat['nom_categorie']) ?>
+        </span>
+        <span class="insight-value insight-value--green">
+            $<?= number_format((float)$topCat['total'], 0, '.', ',') ?>
+        </span>
+    </div>
 
-                <div class="insight-row">
-                    <div class="insight-icon insight-icon--amber">
-                        <?= catIcon('book', $iconMap) ?>
-                    </div>
-                    <span class="insight-label">Lowest spending category</span>
-                    <span class="insight-value insight-value--amber">
-                        $<?= number_format((float)$lowVal, 0, '.', ',') ?>
-                    </span>
-                </div>
+    <div class="insight-row">
+        <div class="insight-icon insight-icon--amber">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+        <span class="insight-label">
+            Lowest spending — <?= htmlspecialchars($lowCat['nom_categorie']) ?>
+        </span>
+        <span class="insight-value insight-value--amber">
+            $<?= number_format((float)$lowCat['total'], 0, '.', ',') ?>
+        </span>
+    </div>
 
-                <div class="insight-row">
-                    <div class="insight-icon insight-icon--indigo">
-                        <?= catIcon('film', $iconMap) ?>
-                    </div>
-                    <span class="insight-label">Most active this week</span>
-                    <span class="insight-value insight-value--indigo">
-                        <?= $activeTx ?> transactions
-                    </span>
-                </div>
-
-            </div>
+    <div class="insight-row">
+        <div class="insight-icon insight-icon--indigo">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <span class="insight-label">
+            Most active this week
+            <?php if (!empty($mostActive)): ?>
+                — <?= htmlspecialchars($mostActive['nom_categorie']) ?>
             <?php endif; ?>
+        </span>
+        <span class="insight-value insight-value--indigo">
+            <?= !empty($mostActive) ? (int)$mostActive['tx_count'] . ' transactions' : 'No data' ?>
+        </span>
+    </div>
+
+</div>
+<?php endif; ?>
 
         </div>
 

@@ -31,6 +31,39 @@ class Category
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getSpendingByCategory(int $userId): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT c.id_categorie, c.nom_categorie, c.couleur,
+                COALESCE(SUM(t.montant), 0) AS total,
+                COUNT(t.id_transaction) AS tx_count
+            FROM categories c
+            LEFT JOIN transactions t ON t.id_categorie = c.id_categorie
+                AND t.id_utilisateur = ?
+                AND t.type_transaction = "depense"
+            GROUP BY c.id_categorie
+            ORDER BY total DESC
+        ');
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMostActiveThisWeek(int $userId): array
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT c.nom_categorie, COUNT(t.id_transaction) AS tx_count
+            FROM transactions t
+            JOIN categories c ON t.id_categorie = c.id_categorie
+            WHERE t.id_utilisateur = ?
+            AND t.date_transaction >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY c.id_categorie
+            ORDER BY tx_count DESC
+            LIMIT 1
+        ');
+        $stmt->execute([$userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function find(int $id): ?array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ?");
