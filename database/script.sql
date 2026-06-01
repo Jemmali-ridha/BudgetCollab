@@ -100,3 +100,16 @@ CREATE TABLE budget_members (
     FOREIGN KEY (id_budget)      REFERENCES budgets(id_budget),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
+
+CREATE TABLE budget_invitations (
+    id_invitation  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_budget      INT UNSIGNED NOT NULL,
+    invited_by     INT UNSIGNED NOT NULL,
+    invited_user   INT UNSIGNED NOT NULL,
+    status         ENUM('pending', 'accepted', 'declined') NOT NULL DEFAULT 'pending',
+    created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_inv_budget  FOREIGN KEY (id_budget)    REFERENCES budgets(id_budget),
+    CONSTRAINT fk_inv_by      FOREIGN KEY (invited_by)   REFERENCES utilisateurs(id_utilisateur),
+    CONSTRAINT fk_inv_user    FOREIGN KEY (invited_user) REFERENCES utilisateurs(id_utilisateur),
+    UNIQUE KEY uq_invite (id_budget, invited_user)
+);
