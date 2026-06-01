@@ -22,15 +22,14 @@ class CategoryController
     public function create(): void
     {
         $name = trim($_POST['name'] ?? '');
-        $description = trim($_POST['description'] ?? '');
+        $id_createur = $_SESSION['user_id'] ?? null;
 
         if (empty($name)) {
             flashMessage('danger', 'Category name is required.');
-            header('Location: index.php?page=categories&action=create');
             exit;
         }
 
-        $this->model->create($name, $description ?: null);
+        $this->model->create($name, $id_createur ?: null);
 
         flashMessage('success', 'Category created successfully.');
         header('Location: index.php?page=categories');

@@ -211,7 +211,7 @@ $sortedValues = array_values($chartValues);
                 <button class="modal-close" id="closeCatModal" aria-label="Close">&times;</button>
             </div>
 
-            <form class="modal-form" method="POST" action="index.php?page=categories">
+            <form class="modal-form" method="POST" action="index.php?page=categories&action=create">
                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                 <input type="hidden" name="action"     id="catFormAction" value="create">
                 <input type="hidden" name="id"         id="catIdInput"    value="">

@@ -109,8 +109,11 @@ switch ($page) {
 
             $ctrl = new CategoryController();
 
-            match($action){
-                default => $ctrl->show()
+            match($action) {
+                'create' => $ctrl->create(),  // Handles both form display AND submission
+                'update' => $ctrl->update(),
+                'delete' => $ctrl->delete(),
+                default  => $ctrl->show()
             };
 
             break;

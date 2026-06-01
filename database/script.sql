@@ -31,24 +31,24 @@ CREATE TABLE utilisateurs (
 CREATE TABLE categories (
     id_categorie    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nom_categorie   VARCHAR(100) NOT NULL,
-    icone           VARCHAR(50)  DEFAULT NULL,       -- nom d'icône (ex: 'home', 'car')
-    couleur         VARCHAR(7)   DEFAULT '#607D8B',  -- code hex
-    id_createur     INT UNSIGNED DEFAULT NULL,       -- NULL = catégorie système
-    est_systeme     TINYINT(1)   NOT NULL DEFAULT 0, -- 1 = catégorie par défaut
+    icone           VARCHAR(50)  DEFAULT NULL,
+    couleur         VARCHAR(7)   DEFAULT '#607D8B',
+    id_createur     INT UNSIGNED DEFAULT NULL,   
+    est_systeme     TINYINT(1)   NOT NULL DEFAULT 0, 
     date_creation   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_cat_createur FOREIGN KEY (id_createur) REFERENCES utilisateurs(id_utilisateur) ON DELETE SET NULL
 );
 
 INSERT INTO categories (nom_categorie, icone, couleur, est_systeme) VALUES
-  ('Alimentation',  'shopping-cart', '#4CAF50', 1),
+  ('Food',  'shopping-cart', '#4CAF50', 1),
   ('Transport',     'car',           '#2196F3', 1),
-  ('Logement',      'home',          '#9C27B0', 1),
-  ('Santé',         'heart',         '#F44336', 1),
-  ('Loisirs',       'film',          '#FF9800', 1),
-  ('Études',        'book',          '#00BCD4', 1),
-  ('Vêtements',     'tag',           '#E91E63', 1),
-  ('Épargne',       'piggy-bank',    '#8BC34A', 1),
-  ('Autres',        'more-horizontal','#607D8B', 1);
+  ('Accommodation',      'home',          '#9C27B0', 1),
+  ('Health',         'heart',         '#F44336', 1),
+  ('Hobbies',       'film',          '#FF9800', 1),
+  ('Studies',        'book',          '#00BCD4', 1),
+  ('Clothes',     'tag',           '#E91E63', 1),
+  ('Savings',       'piggy-bank',    '#8BC34A', 1),
+  ('Others',        'more-horizontal','#607D8B', 1);
 
 CREATE TABLE budgets (
     id_budget INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +59,7 @@ CREATE TABLE budgets (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
 
-    total_limit DECIMAL(12,3) DEFAULT NULL,  -- NULL = no global limit
+    total_limit DECIMAL(12,3) DEFAULT NULL, 
 
     alert_threshold ENUM('50%', '75%', '90%', '100%') DEFAULT '75%',
 
