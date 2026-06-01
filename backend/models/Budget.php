@@ -70,13 +70,19 @@ class Budget
         private function getMembersByBudget(int $budgetId): array
         {
             $stmt = $this->pdo->prepare('
-                SELECT u.id_utilisateur, u.nom, u.prenom
-                FROM transactions t
-                JOIN utilisateurs u ON t.id_utilisateur = u.id_utilisateur
-                WHERE t.id_budget = ?
-                GROUP BY u.id_utilisateur
+                SELECT
+                    u.id_utilisateur,
+                    u.nom,
+                    u.prenom
+                FROM budget_members bm
+                JOIN utilisateurs u
+                    ON bm.id_utilisateur = u.id_utilisateur
+                WHERE bm.id_budget = ?
+                ORDER BY u.prenom, u.nom
             ');
+
             $stmt->execute([$budgetId]);
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -109,25 +115,45 @@ class Budget
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-    public function create(array $data): bool
-    {
-        $stmt = $this->pdo->prepare('
-            INSERT INTO budgets 
-                (budget_name, budget_type, start_date, end_date, total_limit, alert_threshold, created_by)
-            VALUES 
-                (:budget_name, :budget_type, :start_date, :end_date, :total_limit, :alert_threshold, :created_by)
-        ');
+            public function create(array $data): bool
+            {
+                $stmt = $this->pdo->prepare('
+                    INSERT INTO budgets
+                        (budget_name, budget_type, start_date, end_date, total_limit, alert_threshold, created_by)
+                    VALUES
+                        (:budget_name, :budget_type, :start_date, :end_date, :total_limit, :alert_threshold, :created_by)
+                ');
 
-        return $stmt->execute([
-            ':budget_name'     => $data['budget_name'],
-            ':budget_type'     => $data['budget_type'],
-            ':start_date'      => $data['start_date'],
-            ':end_date'        => $data['end_date'],
-            ':total_limit'     => $data['total_limit'] ?: null,
-            ':alert_threshold' => $data['alert_threshold'],
-            ':created_by'      => $data['created_by'],
-        ]);
-    }
+                $success = $stmt->execute([
+                    ':budget_name'     => $data['budget_name'],
+                    ':budget_type'     => $data['budget_type'],
+                    ':start_date'      => $data['start_date'],
+                    ':end_date'        => $data['end_date'],
+                    ':total_limit'     => $data['total_limit'] ?: null,
+                    ':alert_threshold' => $data['alert_threshold'],
+                    ':created_by'      => $data['created_by'],
+                ]);
+
+                if (!$success) {
+                    return false;
+                }
+
+                // Get the ID of the newly created budget
+                $budgetId = (int) $this->pdo->lastInsertId();
+
+                // Add creator as a member
+                $stmt2 = $this->pdo->prepare('
+                    INSERT INTO budget_members (id_budget, id_utilisateur)
+                    VALUES (?, ?)
+                ');
+
+                $stmt2->execute([
+                    $budgetId,
+                    $data['created_by']
+                ]);
+
+                return true;
+            }
 
     public function getByUser(int $userId): array
     {
