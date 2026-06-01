@@ -222,4 +222,51 @@ class SharedBudgetsController
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function delete(): void
+{
+    requiertConnexion();
+    
+    $budgetId = (int)($_GET['id'] ?? 0);
+    $userId = $_SESSION['user_id'];
+    
+    if (!$budgetId) {
+        flashMessage('danger', 'Budget invalide.');
+        header('Location: index.php?page=shared-budgets');
+        exit;
+    }
+    
+    // Vérifier que l'utilisateur est bien le créateur du budget
+    $pdo = getDB();
+    $checkStmt = $pdo->prepare('
+        SELECT created_by FROM budgets 
+        WHERE id_budget = ? AND budget_type = "shared"
+    ');
+    $checkStmt->execute([$budgetId]);
+    $budget = $checkStmt->fetch();
+    
+    if (!$budget) {
+        flashMessage('danger', 'Budget non trouvé.');
+        header('Location: index.php?page=shared-budgets');
+        exit;
+    }
+    
+    if ($budget['created_by'] != $userId) {
+        flashMessage('danger', 'Vous n\'êtes pas autorisé à supprimer ce budget.');
+        header('Location: index.php?page=shared-budgets');
+        exit;
+    }
+    
+    // Supprimer le budget (les transactions et membres seront supprimés en cascade)
+    $deleteStmt = $pdo->prepare('DELETE FROM budgets WHERE id_budget = ?');
+    $success = $deleteStmt->execute([$budgetId]);
+    
+    if ($success) {
+        flashMessage('success', 'Budget partagé supprimé avec succès.');
+    } else {
+        flashMessage('danger', 'Erreur lors de la suppression du budget.');
+    }
+    
+    header('Location: index.php?page=shared-budgets');
+    exit;
+}
 }

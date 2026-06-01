@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    /* ── Progress bars animation ── */
     document.querySelectorAll('.progress-bar__fill').forEach(bar => {
         const target = parseFloat(bar.dataset.width || bar.style.width) || 0;
         bar.style.width = '0%';
@@ -9,6 +10,17 @@
         }, 80);
     });
 
+    /* ── Confirmation de suppression ── */
+    document.querySelectorAll('.btn-delete-card').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const confirmMsg = btn.dataset.confirm || 'Delete this shared budget? All data will be lost. This action cannot be undone.';
+            if (!confirm(confirmMsg)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    /* ── Decline invite banners with AJAX ── */
     document.querySelectorAll('[data-decline-invite]').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -53,8 +65,12 @@
             el.style.paddingTop    = '0';
             el.style.paddingBottom = '0';
         });
+        setTimeout(() => {
+            el.remove();
+        }, 400);
     }
 
+    /* ── Invite modal ── */
     const modal           = document.getElementById('inviteModal');
     const modalClose      = document.getElementById('inviteModalClose');
     const modalCancel     = document.getElementById('inviteModalCancel');
@@ -71,8 +87,14 @@
         modalBudgetId.value        = budgetId ?? '';
         modalBudgetName.textContent = budgetName ?? '';
 
+        // Réinitialiser les cases à cocher
         document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
-        if (searchInput) { searchInput.value = ''; filterUsers(''); }
+        
+        // Réinitialiser la recherche
+        if (searchInput) { 
+            searchInput.value = ''; 
+            filterUsers(''); 
+        }
 
         modal.hidden = false;
         document.body.style.overflow = 'hidden';
@@ -87,43 +109,57 @@
     function filterUsers(searchTerm) {
         if (!usersCheckboxList) return;
         const term = searchTerm.toLowerCase().trim();
-        usersCheckboxList.querySelectorAll('.user-checkbox-item').forEach(item => {
+        const items = usersCheckboxList.querySelectorAll('.user-checkbox-item');
+        
+        items.forEach(item => {
             const name  = item.querySelector('.user-checkbox-name')?.textContent.toLowerCase()  || '';
             const email = item.querySelector('.user-checkbox-email')?.textContent.toLowerCase() || '';
-            item.style.display = (!term || name.includes(term) || email.includes(term)) ? 'flex' : 'none';
+            const shouldShow = (term === '' || name.includes(term) || email.includes(term));
+            item.style.display = shouldShow ? 'flex' : 'none';
         });
     }
 
     function selectAllVisible() {
-        usersCheckboxList
-            ?.querySelectorAll('.user-checkbox-item:not([style*="display: none"]) .user-checkbox')
-            .forEach(cb => cb.checked = true);
+        const visibleItems = usersCheckboxList?.querySelectorAll('.user-checkbox-item:not([style*="display: none"])');
+        visibleItems?.forEach(item => {
+            const checkbox = item.querySelector('.user-checkbox');
+            if (checkbox) checkbox.checked = true;
+        });
     }
 
     function deselectAll() {
         document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
     }
 
+    // Boutons invite dans les cartes
     document.querySelectorAll('.btn-invite-card').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (btn.dataset.budgetId && btn.dataset.budgetName) {
-                openModal(btn.dataset.budgetId, btn.dataset.budgetName);
+            e.stopPropagation();
+            const budgetId = btn.dataset.budgetId;
+            const budgetName = btn.dataset.budgetName;
+            if (budgetId && budgetName) {
+                openModal(budgetId, budgetName);
             }
         });
     });
 
+    // Fermeture du modal
     if (modalClose)      modalClose.addEventListener('click', closeModal);
     if (modalCancel)     modalCancel.addEventListener('click', closeModal);
     if (searchInput)     searchInput.addEventListener('input', e => filterUsers(e.target.value));
     if (selectAllBtn)    selectAllBtn.addEventListener('click', selectAllVisible);
     if (deselectAllBtn)  deselectAllBtn.addEventListener('click', deselectAll);
 
+    // Fermer en cliquant sur le backdrop
     modal?.querySelector('.invite-modal__backdrop')?.addEventListener('click', closeModal);
+
+    // Fermer avec Échap
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
     });
 
+    /* ── Soumission du formulaire d'invitation ── */
     const inviteForm = document.getElementById('inviteForm');
     if (inviteForm) {
         inviteForm.addEventListener('submit', async (e) => {
@@ -150,6 +186,8 @@
                     closeModal();
                     window.location.reload();
                 } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
                     showModalError('Une erreur est survenue lors de l\'envoi des invitations.');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalHTML;
@@ -169,11 +207,22 @@
             err = document.createElement('p');
             err.id = 'modalErrorMsg';
             err.className = 'modal-error-msg';
-            inviteForm?.querySelector('.invite-modal__actions')?.before(err);
+            const actionsDiv = inviteForm?.querySelector('.invite-modal__actions');
+            if (actionsDiv) {
+                actionsDiv.before(err);
+            } else {
+                inviteForm?.appendChild(err);
+            }
         }
         err.textContent = msg;
         err.style.display = 'block';
-        setTimeout(() => { err.style.display = 'none'; }, 4000);
+        setTimeout(() => { 
+            if (err) err.style.display = 'none'; 
+        }, 4000);
     }
 
+    // Debug: Afficher le nombre de boutons trouvés (à supprimer en production)
+    console.log('shared_budgets.js chargé');
+    console.log('Boutons .btn-invite-card trouvés:', document.querySelectorAll('.btn-invite-card').length);
+    console.log('Boutons .btn-delete-card trouvés:', document.querySelectorAll('.btn-delete-card').length);
 })();

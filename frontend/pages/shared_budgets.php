@@ -19,6 +19,7 @@ $sharedBudgets  = $sharedBudgets  ?? [];
 $pendingInvites = $pendingInvites ?? [];
 $recentActivity = $recentActivity ?? [];
 $allUsers = $allUsers ?? [];
+$currentUserId = $_SESSION['user_id'] ?? 0;
 
 // Fonction helper pour la couleur d'avatar
 function getAvatarColor($id) {
@@ -61,22 +62,13 @@ function getAvatarColor($id) {
         </div>
 
         <div class="invitation-banner__actions">
-<<<<<<< HEAD
             <a href="index.php?page=shared-budgets&action=accept-token&token=<?= htmlspecialchars($invite['token']) ?>"
                class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
             <button class="btn-decline" data-decline-invite data-invite-id="<?= (int)($invite['id_invitation'] ?? 0) ?>">
-=======
-            <a href="index.php?page=invitations&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
-            class="btn-accept">
-                <i class="fas fa-check"></i> Accept
-            </a>
-            <a href="index.php?page=invitations&action=decline&id=<?= (int)$invite['id_invitation'] ?>"
-            class="btn-decline">
->>>>>>> de3d1c22352bcb281c536a4e0e1ccb00f3d1ed4c
                 <i class="fas fa-times"></i> Decline
-            </a>
+            </button>
         </div>
 
     </div>
@@ -101,6 +93,7 @@ function getAvatarColor($id) {
                 $color   = sbBarColor($pct);
                 $accent  = sbCardAccent($i);
                 $members = $budget['members'] ?? [];
+                $isOwner = ($budget['created_by'] == $currentUserId);
             ?>
             <div class="shared-card shared-card<?= $accent ?>">
 
@@ -108,14 +101,24 @@ function getAvatarColor($id) {
                     <div class="shared-card__name">
                         <?= htmlspecialchars($budget['budget_name']) ?>
                     </div>
-                    <button
-                        class="btn-invite-card"
-                        data-budget-id="<?= (int)$budget['id_budget'] ?>"
-                        data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
-                        title="Inviter un membre"
-                    >
-                        <i class="fas fa-plus"></i>
-                    </button>
+                    <div class="shared-card__header-actions">
+                        <?php if ($isOwner): ?>
+                            <a href="index.php?page=shared-budgets&action=delete&id=<?= (int)$budget['id_budget'] ?>"
+                               class="btn-delete-card"
+                               data-confirm="Delete this shared budget? All data will be lost. This action cannot be undone."
+                               title="Supprimer ce budget">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        <?php endif; ?>
+                        <button
+                            class="btn-invite-card"
+                            data-budget-id="<?= (int)$budget['id_budget'] ?>"
+                            data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
+                            title="Inviter un membre"
+                        >
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <?php if (!empty($members)): ?>
@@ -133,6 +136,11 @@ function getAvatarColor($id) {
                         <?= $initials ?>
                     </div>
                     <?php endforeach; ?>
+                    <?php if (count($members) > 5): ?>
+                        <div class="member-avatar member-avatar--more" title="<?= (count($members) - 5) ?> more members">
+                            +<?= count($members) - 5 ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
 

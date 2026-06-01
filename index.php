@@ -85,10 +85,11 @@ case 'shared-budgets':
     $ctrl = new SharedBudgetsController();
 
     match($action){
-        'invite'       => $ctrl->invite(),
+        'invite' => $ctrl->invite(),
+        'decline' => $ctrl->decline(),
         'accept-token' => $ctrl->accept(),
-        'decline'      => $ctrl->decline(),
-        default        => $ctrl->show()
+        'delete' => $ctrl->delete(),
+        default => $ctrl->show()
     };
     break;
 
