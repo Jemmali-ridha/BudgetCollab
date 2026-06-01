@@ -62,11 +62,11 @@ function getAvatarColor($id) {
         </div>
 
         <div class="invitation-banner__actions">
-            <a href="index.php?page=shared-budgets&action=accept-token&token=<?= htmlspecialchars($invite['token']) ?>"
-               class="btn-accept">
+            <a href="index.php?page=shared-budgets&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
+            class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
-            <button class="btn-decline" data-decline-invite data-invite-id="<?= (int)($invite['id_invitation'] ?? 0) ?>">
+            <button class="btn-decline" data-decline-invite="<?= (int)$invite['id_invitation'] ?>">
                 <i class="fas fa-times"></i> Decline
             </button>
         </div>
@@ -110,14 +110,14 @@ function getAvatarColor($id) {
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         <?php endif; ?>
+                        <?php if ($budget['created_by'] === $_SESSION['user_id']): ?>
                         <button
                             class="btn-invite-card"
-                            data-budget-id="<?= (int)$budget['id_budget'] ?>"
-                            data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
-                            title="Invite a member"
-                        >
+                            data-budget-id="<?= $budget['id_budget'] ?>"
+                            data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>">
                             <i class="fas fa-plus"></i>
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
 

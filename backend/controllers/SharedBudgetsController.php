@@ -87,99 +87,88 @@ class SharedBudgetsController
         exit;
     }
     
-    private function createInvitation(int $budgetId, int $userId): bool
-    {
-        $pdo = getDB();
-        $token = bin2hex(random_bytes(32));
-        $invitedBy = $_SESSION['user_id'];
-        
-        $stmt = $pdo->prepare('
-            INSERT INTO invitations (id_budget, id_invite, id_invitant, token, statut, date_expiration)
-            VALUES (?, ?, ?, ?, "pending", DATE_ADD(NOW(), INTERVAL 7 DAY))
-        ');
-        
-        return $stmt->execute([$budgetId, $userId, $invitedBy, $token]);
-    }
-    
-    public function decline(): void
-    {
-        requiertConnexion();
-        
-        $inviteId = (int)($_GET['id'] ?? 0);
-        
-        if (!$inviteId) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid invitation ID']);
-            return;
-        }
-        
-        $pdo = getDB();
-        $stmt = $pdo->prepare('
-            UPDATE invitations 
-            SET statut = "declined" 
-            WHERE id_invitation = ? AND id_invite = ?
-        ');
-        
-        $success = $stmt->execute([$inviteId, $_SESSION['user_id']]);
-        
-        if ($success) {
-            echo json_encode(['success' => true]);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'Could not decline invitation']);
-        }
-        exit;
-    }
-    
-    
-    public function accept(): void
-    {
-        requiertConnexion();
-        
-        $token = $_GET['token'] ?? '';
-        
-        if (!$token) {
-            flashMessage('danger', 'Token d\'invitation invalide.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
-        }
-        
-        $pdo = getDB();
-        
-        $stmt = $pdo->prepare('
-            SELECT i.*, b.budget_type 
-            FROM invitations i
-            JOIN budgets b ON i.id_budget = b.id_budget
-            WHERE i.token = ? AND i.id_invite = ? AND i.statut = "pending" AND i.date_expiration > NOW()
-        ');
-        $stmt->execute([$token, $_SESSION['user_id']]);
-        $invite = $stmt->fetch();
-        
-        if (!$invite) {
-            flashMessage('danger', 'Invitation invalide ou expirée.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
-        }
-        
-        if ($invite['budget_type'] !== 'shared') {
-            $updateStmt = $pdo->prepare('UPDATE budgets SET budget_type = "shared" WHERE id_budget = ?');
-            $updateStmt->execute([$invite['id_budget']]);
-        }
-        
-        $memberStmt = $pdo->prepare('
-            INSERT INTO budget_members (id_budget, id_utilisateur, joined_at)
-            VALUES (?, ?, NOW())
-            ON DUPLICATE KEY UPDATE joined_at = joined_at
-        ');
-        $memberStmt->execute([$invite['id_budget'], $_SESSION['user_id']]);
-        
-        $updateInvite = $pdo->prepare('UPDATE invitations SET statut = "accepted" WHERE id_invitation = ?');
-        $updateInvite->execute([$invite['id_invitation']]);
-        
-        flashMessage('success', 'Vous avez rejoint le budget partagé avec succès !');
+    // createInvitation()
+private function createInvitation(int $budgetId, int $userId): bool
+{
+    $pdo = getDB();
+    $invitedBy = $_SESSION['user_id'];
+
+    $stmt = $pdo->prepare('
+        INSERT IGNORE INTO budget_invitations (id_budget, invited_by, invited_user)
+        VALUES (?, ?, ?)
+    ');
+    return $stmt->execute([$budgetId, $invitedBy, $userId]);
+}
+
+// accept() — no token, use id instead
+public function accept(): void
+{
+    requiertConnexion();
+
+    $inviteId = (int) ($_GET['id'] ?? 0);
+
+    if (!$inviteId) {
+        flashMessage('danger', 'Invalid invitation.');
         header('Location: index.php?page=shared-budgets');
         exit;
     }
+
+    $pdo = getDB();
+
+    $stmt = $pdo->prepare('
+        SELECT * FROM budget_invitations
+        WHERE id_invitation = ? AND invited_user = ? AND status = "pending"
+    ');
+    $stmt->execute([$inviteId, $_SESSION['user_id']]);
+    $invite = $stmt->fetch();
+
+    if (!$invite) {
+        flashMessage('danger', 'Invalid or already processed invitation.');
+        header('Location: index.php?page=shared-budgets');
+        exit;
+    }
+
+    // Add to budget_members
+    $pdo->prepare('
+        INSERT INTO budget_members (id_budget, id_utilisateur)
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE joined_at = joined_at
+    ')->execute([$invite['id_budget'], $_SESSION['user_id']]);
+
+    // Mark accepted
+    $pdo->prepare('
+        UPDATE budget_invitations SET status = "accepted"
+        WHERE id_invitation = ?
+    ')->execute([$inviteId]);
+
+    flashMessage('success', 'You have joined the budget.');
+    header('Location: index.php?page=shared-budgets');
+    exit;
+}
+
+// decline()
+public function decline(): void
+{
+    requiertConnexion();
+
+    $inviteId = (int) ($_GET['id'] ?? 0);
+
+    $pdo = getDB();
+    $stmt = $pdo->prepare('
+        UPDATE budget_invitations SET status = "declined"
+        WHERE id_invitation = ? AND invited_user = ?
+    ');
+    $success = $stmt->execute([$inviteId, $_SESSION['user_id']]);
+
+    if (request_is_ajax()) {
+        echo json_encode(['success' => $success]);
+        exit;
+    }
+
+    flashMessage('success', 'Invitation declined.');
+    header('Location: index.php?page=shared-budgets');
+    exit;
+}
     
 
     public function delete(): void

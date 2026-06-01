@@ -21,13 +21,13 @@ class Invitation
     public function getPendingByUser(int $userId): array
     {
         $stmt = $this->pdo->prepare('
-            SELECT i.*,
+            SELECT i.id_invitation, i.id_budget,
                    b.budget_name, b.total_limit,
                    u.nom AS inviter_nom, u.prenom AS inviter_prenom,
                    (SELECT COUNT(*) FROM budget_members bm WHERE bm.id_budget = i.id_budget) AS member_count
             FROM budget_invitations i
-            JOIN budgets b            ON i.id_budget  = b.id_budget
-            JOIN utilisateurs u       ON i.invited_by = u.id_utilisateur
+            JOIN budgets b      ON i.id_budget  = b.id_budget
+            JOIN utilisateurs u ON i.invited_by = u.id_utilisateur
             WHERE i.invited_user = ? AND i.status = "pending"
             ORDER BY i.created_at DESC
         ');

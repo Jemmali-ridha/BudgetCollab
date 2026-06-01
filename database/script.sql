@@ -113,3 +113,12 @@ CREATE TABLE budget_invitations (
     CONSTRAINT fk_inv_user    FOREIGN KEY (invited_user) REFERENCES utilisateurs(id_utilisateur),
     UNIQUE KEY uq_invite (id_budget, invited_user)
 );
+
+ALTER TABLE transactions
+DROP FOREIGN KEY fk_tr_budget;
+
+ALTER TABLE transactions
+ADD CONSTRAINT fk_tr_budget
+FOREIGN KEY (id_budget)
+REFERENCES budgets(id_budget)
+ON DELETE CASCADE;

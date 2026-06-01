@@ -80,18 +80,18 @@ switch ($page) {
             break;
 
 
-case 'shared-budgets':
-    require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
-    $ctrl = new SharedBudgetsController();
+        case 'shared-budgets':
+            require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
+            $ctrl = new SharedBudgetsController();
 
-    match($action){
-        'invite' => $ctrl->invite(),
-        'decline' => $ctrl->decline(),
-        'accept-token' => $ctrl->accept(),
-        'delete' => $ctrl->delete(),
-        default => $ctrl->show()
-    };
-    break;
+            match($action) {
+                'invite'  => $ctrl->invite(),
+                'accept'  => $ctrl->accept(),
+                'decline' => $ctrl->decline(),
+                'delete'  => $ctrl->delete(),
+                default   => $ctrl->show(),
+            };
+            break;
 
         case 'invitations':
             require_once __DIR__ . '/backend/controllers/InvitationController.php';
@@ -112,7 +112,7 @@ case 'shared-budgets':
             $ctrl = new CategoryController();
 
             match($action) {
-                'create' => $ctrl->create(),  // Handles both form display AND submission
+                'create' => $ctrl->create(),
                 'update' => $ctrl->update(),
                 'delete' => $ctrl->delete(),
                 default  => $ctrl->show()
@@ -131,16 +131,6 @@ case 'shared-budgets':
             };
 
             break;
-
-        case 'profile':
-            require_once __DIR__ . '/backend/controllers/ProfileController.php';
-            $ctrl = new ProfileController();
-            match($action) {
-               'update' => $ctrl->update(),
-               'delete' => $ctrl->delete(),
-                default  => $ctrl->show(),
-    };
-    break;
     
 
 

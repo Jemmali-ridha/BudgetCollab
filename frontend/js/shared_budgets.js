@@ -226,3 +226,73 @@
     console.log('Boutons .btn-invite-card trouvés:', document.querySelectorAll('.btn-invite-card').length);
     console.log('Boutons .btn-delete-card trouvés:', document.querySelectorAll('.btn-delete-card').length);
 })();
+
+const inviteModal     = document.getElementById('inviteModal');
+const inviteModalClose  = document.getElementById('inviteModalClose');
+const inviteModalCancel = document.getElementById('inviteModalCancel');
+const inviteModalBudgetId   = document.getElementById('inviteModalBudgetId');
+const inviteModalBudgetName = document.getElementById('inviteModalBudgetName');
+const usersSearchInput      = document.getElementById('usersSearchInput');
+const usersCheckboxList     = document.getElementById('usersCheckboxList');
+
+// Open modal
+document.querySelectorAll('.btn-invite-members').forEach(btn => {
+    btn.addEventListener('click', () => {
+        inviteModalBudgetId.value       = btn.dataset.budgetId;
+        inviteModalBudgetName.textContent = btn.dataset.budgetName;
+
+        // Reset checkboxes and search
+        usersSearchInput.value = '';
+        document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.user-checkbox-item').forEach(el => el.style.display = '');
+
+        inviteModal.hidden = false;
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+// Close modal
+function closeInviteModal() {
+    inviteModal.hidden = true;
+    document.body.style.overflow = '';
+}
+
+inviteModalClose.addEventListener('click', closeInviteModal);
+inviteModalCancel.addEventListener('click', closeInviteModal);
+inviteModal.querySelector('.invite-modal__backdrop').addEventListener('click', closeInviteModal);
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !inviteModal.hidden) closeInviteModal();
+});
+
+// Search filter
+usersSearchInput.addEventListener('input', () => {
+    const q = usersSearchInput.value.toLowerCase();
+    document.querySelectorAll('.user-checkbox-item').forEach(item => {
+        const name  = item.querySelector('.user-checkbox-name').textContent.toLowerCase();
+        const email = item.querySelector('.user-checkbox-email').textContent.toLowerCase();
+        item.style.display = (name.includes(q) || email.includes(q)) ? '' : 'none';
+    });
+});
+
+// Select / Deselect all
+document.getElementById('selectAllUsers').addEventListener('click', () => {
+    document.querySelectorAll('.user-checkbox-item:not([style*="display: none"]) .user-checkbox')
+        .forEach(cb => cb.checked = true);
+});
+
+document.getElementById('deselectAllUsers').addEventListener('click', () => {
+    document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+});
+
+// Decline via AJAX
+document.querySelectorAll('[data-decline-invite]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const id = btn.dataset.declineInvite;
+        fetch(`index.php?page=shared-budgets&action=decline&id=${id}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) btn.closest('.invitation-banner').remove();
+            });
+    });
+});

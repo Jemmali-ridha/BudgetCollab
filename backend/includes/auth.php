@@ -26,6 +26,11 @@ function estAdmin(): bool
     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
+function request_is_ajax(): bool
+{
+    return isset($_SERVER['HTTP_X_REQUESTED_WITH']) 
+        && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+}
 /** Retourne un tableau avec les infos de l'utilisateur connecté */
 function utilisateurConnecte(): array
 {
