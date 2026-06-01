@@ -2,143 +2,144 @@
 require_once __DIR__ . '/../includes/header.php';
  
 ?>
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card stat-card--green">
-                    <div class="stat-card-top">
-                        <i class="fas fa-arrow-up"></i>
-                        <span class="stat-label">Total Revenues</span>
-                    </div>
-                    <div class="stat-value">$45,231</div>
-                    <div class="stat-trend trend-up">+12.5% from last month</div>
-                </div>
-                <div class="stat-card stat-card--red">
-                    <div class="stat-card-top">
-                        <i class="fas fa-arrow-down"></i>
-                        <span class="stat-label">Total Expenses</span>
-                    </div>
-                    <div class="stat-value">$32,450</div>
-                    <div class="stat-trend trend-down">+8.2% from last month</div>
-                </div>
-                <div class="stat-card stat-card--amber">
-                    <div class="stat-card-top">
-                        <i class="fas fa-scale-balanced"></i>
-                        <span class="stat-label">Balance</span>
-                    </div>
-                    <div class="stat-value">$12,781</div>
-                    <div class="stat-trend trend-up">+4.3% from last month</div>
-                </div>
-                <div class="stat-card stat-card--indigo">
-                    <div class="stat-card-top">
-                        <i class="fas fa-percent"></i>
-                        <span class="stat-label">Budget Usage</span>
-                    </div>
-                    <div class="stat-value">68%</div>
-                    <div class="stat-trend">+2.1% from last month</div>
-                </div>
+
+<style>
+    .donut-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0;
+}
+
+.donut-wrapper canvas {
+    max-width: 220px;
+    max-height: 220px;
+}
+</style>
+<!-- Stat Cards -->
+<div class="stats-grid">
+    <div class="stat-card stat-card--green">
+        <div class="stat-card-top">
+            <i class="fas fa-arrow-up"></i>
+            <span class="stat-label">Total Revenues</span>
+        </div>
+        <div class="stat-value">$<?= number_format($stats['revenu'], 2) ?></div>
+        <div class="stat-trend <?= str_starts_with($stats['trend_revenu'], '+') ? 'trend-up' : 'trend-down' ?>">
+        </div>
+    </div>
+    <div class="stat-card stat-card--red">
+        <div class="stat-card-top">
+            <i class="fas fa-arrow-down"></i>
+            <span class="stat-label">Total Expenses</span>
+        </div>
+        <div class="stat-value">$<?= number_format($stats['depense'], 2) ?></div>
+        <div class="stat-trend <?= str_starts_with($stats['trend_depense'], '+') ? 'trend-down' : 'trend-up' ?>">
+        </div>
+    </div>
+    <div class="stat-card stat-card--amber">
+        <div class="stat-card-top">
+            <i class="fas fa-scale-balanced"></i>
+            <span class="stat-label">Balance</span>
+        </div>
+        <div class="stat-value">$<?= number_format($stats['balance'], 2) ?></div>
+        <div class="stat-trend <?= str_starts_with($stats['trend_balance'], '+') ? 'trend-up' : 'trend-down' ?>">
+        </div>
+    </div>
+    <div class="stat-card stat-card--indigo">
+        <div class="stat-card-top">
+            <i class="fas fa-percent"></i>
+            <span class="stat-label">Budget Usage</span>
+        </div>
+        <div class="stat-value"><?= $stats['budget_usage'] ?>%</div>
+    </div>
+</div>
+
+<!-- Two Columns -->
+<div class="dashboard-two-columns">
+
+    <!-- Budget Progress -->
+    <div class="dashboard-col">
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Budget Progress</h2>
+                <a href="index.php?page=budgets" class="view-all">View all →</a>
             </div>
-
-            <!-- Two Columns Layout -->
-            <div class="dashboard-two-columns">
-
-                <!-- Left: Budget Progress -->
-                <div class="dashboard-col">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2>Budget Progress</h2>
-                            <a href="#" class="view-all">View all →</a>
+            <div class="budget-progress-list">
+                <?php if (empty($budgetProgress)): ?>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">No active budgets yet.</p>
+                <?php else: ?>
+                    <?php foreach ($budgetProgress as $b):
+                        $limit = (float) $b['total_limit'];
+                        $spent = (float) $b['spent'];
+                        $pct   = $limit > 0 ? min(round(($spent / $limit) * 100, 1), 100) : 0;
+                        $color = $pct >= 100 ? 'var(--red)' : ($pct >= 75 ? 'var(--amber)' : 'var(--green)');
+                    ?>
+                    <div class="budget-progress-item">
+                        <div class="budget-progress-info">
+                            <span class="budget-name"><?= htmlspecialchars($b['budget_name']) ?></span>
+                            <span class="budget-amount" style="color: <?= $color ?>;">
+                                $<?= number_format($spent, 0) ?> / $<?= number_format($limit, 0) ?>
+                            </span>
                         </div>
-                        <div class="budget-progress-list">
-                            <div class="budget-progress-item">
-                                <div class="budget-progress-info">
-                                    <span class="budget-name">Groceries</span>
-                                    <span class="budget-amount" style="color: var(--green);">$450 / $600</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 75%; background: var(--green);"></div>
-                                </div>
-                            </div>
-                            <div class="budget-progress-item">
-                                <div class="budget-progress-info">
-                                    <span class="budget-name">Transport</span>
-                                    <span class="budget-amount" style="color: var(--amber);">$280 / $400</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 70%; background: var(--amber);"></div>
-                                </div>
-                            </div>
-                            <div class="budget-progress-item">
-                                <div class="budget-progress-info">
-                                    <span class="budget-name">Entertainment</span>
-                                    <span class="budget-amount" style="color: var(--red);">$520 / $500</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill progress-bar-fill--over" style="width: 100%; background: var(--red);"></div>
-                                </div>
-                            </div>
-                            <div class="budget-progress-item">
-                                <div class="budget-progress-info">
-                                    <span class="budget-name">Shopping</span>
-                                    <span class="budget-amount" style="color: var(--indigo);">$180 / $300</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 60%; background: var(--indigo);"></div>
-                                </div>
-                            </div>
-                            <div class="budget-progress-item">
-                                <div class="budget-progress-info">
-                                    <span class="budget-name">Bills</span>
-                                    <span class="budget-amount" style="color: #8B5CF6;">$340 / $400</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar-fill" style="width: 85%; background: #8B5CF6;"></div>
-                                </div>
-                            </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: <?= $pct ?>%; background: <?= $color ?>;"></div>
                         </div>
                     </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 
-                <!-- Right: Spending by Category (Donut Chart) -->
-                <div class="dashboard-col">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2>Spending by Category</h2>
-                            <a href="#" class="view-all">Details →</a>
-                        </div>
-                        <div class="donut-wrapper">
-                            <canvas id="spendingChart" aria-label="Spending by category donut chart"></canvas>
-                        </div>
-                        <div class="donut-legend">
-                            <div class="donut-legend-item">
-                                <span class="donut-legend-dot" style="background: var(--green);"></span>
-                                <span class="donut-legend-label">Food & Dining</span>
-                                <span class="donut-legend-pct">35%</span>
-                            </div>
-                            <div class="donut-legend-item">
-                                <span class="donut-legend-dot" style="background: var(--amber);"></span>
-                                <span class="donut-legend-label">Transportation</span>
-                                <span class="donut-legend-pct">25%</span>
-                            </div>
-                            <div class="donut-legend-item">
-                                <span class="donut-legend-dot" style="background: var(--indigo);"></span>
-                                <span class="donut-legend-label">Shopping</span>
-                                <span class="donut-legend-pct">20%</span>
-                            </div>
-                            <div class="donut-legend-item">
-                                <span class="donut-legend-dot" style="background: var(--red);"></span>
-                                <span class="donut-legend-label">Entertainment</span>
-                                <span class="donut-legend-pct">12%</span>
-                            </div>
-                            <div class="donut-legend-item">
-                                <span class="donut-legend-dot" style="background: #8B5CF6;"></span>
-                                <span class="donut-legend-label">Bills</span>
-                                <span class="donut-legend-pct">8%</span>
-                            </div>
-                        </div>
+    <!-- Spending by Category -->
+    <div class="dashboard-col">
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Spending by Category</h2>
+                <a href="index.php?page=categories" class="view-all">Details →</a>
+            </div>
+            <?php if (empty($spendingByCategory)): ?>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">No spending data this month.</p>
+            <?php else: ?>
+                <div class="donut-wrapper">
+                    <canvas id="spendingChart" aria-label="Spending by category donut chart"></canvas>
+                </div>
+                <div class="donut-legend">
+                    <?php foreach ($spendingByCategory as $cat): ?>
+                    <div class="donut-legend-item">
+                        <span class="donut-legend-dot" style="background: <?= htmlspecialchars($cat['couleur']) ?>;"></span>
+                        <span class="donut-legend-label"><?= htmlspecialchars($cat['nom_categorie']) ?></span>
+                        <span class="donut-legend-pct"><?= $cat['pct'] ?>%</span>
                     </div>
+                    <?php endforeach; ?>
                 </div>
 
-            </div><!-- /.dashboard-two-columns -->
+                <script>
+                const ctx = document.getElementById('spendingChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: <?= json_encode(array_column($spendingByCategory, 'nom_categorie')) ?>,
+                        datasets: [{
+                            data:  <?= json_encode(array_column($spendingByCategory, 'pct')) ?>,
+                            backgroundColor: <?= json_encode(array_column($spendingByCategory, 'couleur')) ?>,
+                            borderWidth: 0,
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: { legend: { display: false } },
+                        responsive: true,
+                        maintainAspectRatio: true
+                    }
+                });
+                </script>
+            <?php endif; ?>
+        </div>
+    </div>
+
+</div>
         </main>
     </div>
 
