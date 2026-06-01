@@ -91,3 +91,12 @@ CREATE TABLE transactions (
     CONSTRAINT fk_tr_cat    FOREIGN KEY (id_categorie)   REFERENCES categories(id_categorie),
     CONSTRAINT chk_montant  CHECK (montant > 0)
 );
+
+CREATE TABLE budget_members (
+    id_budget      INT UNSIGNED NOT NULL,
+    id_utilisateur INT UNSIGNED NOT NULL,
+    joined_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_budget, id_utilisateur),
+    FOREIGN KEY (id_budget)      REFERENCES budgets(id_budget),
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
+);
