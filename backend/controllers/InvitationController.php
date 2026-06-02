@@ -11,11 +11,10 @@ class InvitationController
 
     public function __construct()
     {
-        $this->model = new Invitation(getDB());
+        $this->model = new Invitation();
         $this->budgetModel = new Budget(getDB());
     }
 
-    // Creator sends invite by email
     public function send(): void
     {
         requiertConnexion();
@@ -26,16 +25,15 @@ class InvitationController
             exit;
         }
 
-        $budgetId = (int) ($_POST['id_budget'] ?? 0);
-        $email    = trim($_POST['email'] ?? '');
+        $budgetId = (int) ($_POST['budget_id'] ?? 0);
+        $userIds = $_POST['users'] ?? [];
 
-        if (!$budgetId || !$email) {
+        if (!$budgetId || empty($userIds)) {
             flashMessage('danger', 'Missing required fields.');
             header('Location: index.php?page=shared-budgets');
             exit;
         }
 
-        // Verify the current user owns this budget
         $budget = $this->budgetModel->getById($budgetId);
         if (!$budget || $budget['created_by'] !== $_SESSION['user_id']) {
             flashMessage('danger', 'You are not authorized to invite members to this budget.');
@@ -43,41 +41,31 @@ class InvitationController
             exit;
         }
 
-        // Find invited user
-        $invitedUser = $this->model->findUserByEmail($email);
-        if (!$invitedUser) {
-            flashMessage('danger', 'No user found with that email.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
+        $invitedCount = 0;
+        foreach ($userIds as $invitedUserId) {
+            $invitedUserId = (int)$invitedUserId;
+            
+            if ($invitedUserId === $_SESSION['user_id']) {
+                continue;
+            }
+
+            if ($this->model->isMember($budgetId, $invitedUserId)) {
+                continue;
+            }
+
+            if ($this->model->alreadyInvited($budgetId, $invitedUserId)) {
+                continue;
+            }
+
+            if ($this->model->invite($budgetId, $_SESSION['user_id'], $invitedUserId)) {
+                $invitedCount++;
+            }
         }
 
-        // Can't invite yourself
-        if ($invitedUser['id_utilisateur'] === $_SESSION['user_id']) {
-            flashMessage('danger', 'You cannot invite yourself.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
-        }
-
-        // Already a member?
-        if ($this->model->isMember($budgetId, $invitedUser['id_utilisateur'])) {
-            flashMessage('danger', 'This user is already a member of this budget.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
-        }
-
-        // Already invited?
-        if ($this->model->alreadyInvited($budgetId, $invitedUser['id_utilisateur'])) {
-            flashMessage('danger', 'This user already has a pending invitation.');
-            header('Location: index.php?page=shared-budgets');
-            exit;
-        }
-
-        $ok = $this->model->invite($budgetId, $_SESSION['user_id'], $invitedUser['id_utilisateur']);
-
-        if ($ok) {
-            flashMessage('success', 'Invitation sent to ' . $invitedUser['prenom'] . ' ' . $invitedUser['nom'] . '.');
+        if ($invitedCount > 0) {
+            flashMessage('success', $invitedCount . ' invitation(s) sent successfully.');
         } else {
-            flashMessage('danger', 'Failed to send invitation.');
+            flashMessage('danger', 'No valid invitations were sent.');
         }
 
         header('Location: index.php?page=shared-budgets');
@@ -115,19 +103,25 @@ class InvitationController
         $invitationId = (int) ($_GET['id'] ?? 0);
 
         if (!$invitationId) {
-            flashMessage('danger', 'Invalid invitation.');
-            header('Location: index.php?page=shared-budgets');
+            if ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? false) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid invitation ID']);
+            } else {
+                flashMessage('danger', 'Invalid invitation.');
+                header('Location: index.php?page=shared-budgets');
+            }
             exit;
         }
 
         $ok = $this->model->decline($invitationId, $_SESSION['user_id']);
 
-        if ($ok) {
-            flashMessage('success', 'Invitation declined.');
-        } else {
-            flashMessage('danger', 'Unable to decline this invitation.');
+        if ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? false) {
+            echo json_encode(['success' => $ok]);
+            exit;
         }
 
+        flashMessage($ok ? 'success' : 'danger', 
+                    $ok ? 'Invitation declined.' : 'Unable to decline this invitation.');
         header('Location: index.php?page=shared-budgets');
         exit;
     }
