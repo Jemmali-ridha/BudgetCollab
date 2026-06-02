@@ -18,14 +18,17 @@ class ProfileController
         // Stats
         $stats = [];
 
-        $pdo->prepare('SELECT COUNT(*) FROM budgets WHERE created_by = ?')
-            ->execute([$userId]);
-        $stats['budgets'] = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_by = $userId")->fetchColumn();
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM budgets WHERE created_by = ?');
+        $stmt->execute([$userId]);
+        $stats['budgets'] = $stmt->fetchColumn();
 
-        $stats['transactions'] = $pdo->prepare('SELECT COUNT(*) FROM transactions WHERE id_utilisateur = ?')
-            ->execute([$userId]) ? $pdo->query("SELECT COUNT(*) FROM transactions WHERE id_utilisateur = $userId")->fetchColumn() : 0;
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM transactions WHERE id_utilisateur = ?');
+        $stmt->execute([$userId]);
+        $stats['transactions'] = $stmt->fetchColumn();
 
-        $stats['shared'] = $pdo->query("SELECT COUNT(*) FROM budget_members WHERE id_utilisateur = $userId")->fetchColumn();
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM budget_members WHERE id_utilisateur = ?');
+        $stmt->execute([$userId]);
+        $stats['shared'] = $stmt->fetchColumn();
 
         $flash     = getFlash();
 
