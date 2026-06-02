@@ -62,10 +62,12 @@ function getAvatarColor($id) {
         </div>
 
         <div class="invitation-banner__actions">
-            <a href="index.php?page=shared-budgets&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
-            class="btn-accept">
+            <!-- ✅ Accept invitation via InvitationController -->
+            <a href="index.php?page=invitations&action=accept&id=<?= (int)$invite['id_invitation'] ?>"
+               class="btn-accept">
                 <i class="fas fa-check"></i> Accept
             </a>
+            <!-- ✅ Decline invitation via InvitationController -->
             <button class="btn-decline" data-decline-invite="<?= (int)$invite['id_invitation'] ?>">
                 <i class="fas fa-times"></i> Decline
             </button>
@@ -103,20 +105,21 @@ function getAvatarColor($id) {
                     </div>
                     <div class="shared-card__header-actions">
                         <?php if ($isOwner): ?>
+                            <!-- ✅ Delete budget via SharedBudgetsController -->
                             <a href="index.php?page=shared-budgets&action=delete&id=<?= (int)$budget['id_budget'] ?>"
                                class="btn-delete-card"
                                data-confirm="Delete this shared budget? All data will be lost. This action cannot be undone."
                                title="Delete this budget">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
-                        <?php endif; ?>
-                        <?php if ($budget['created_by'] === $_SESSION['user_id']): ?>
-                        <button
-                            class="btn-invite-card"
-                            data-budget-id="<?= $budget['id_budget'] ?>"
-                            data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                            <!-- ✅ Invite button - opens modal -->
+                            <button
+                                class="btn-invite-card"
+                                data-budget-id="<?= (int)$budget['id_budget'] ?>"
+                                data-budget-name="<?= htmlspecialchars($budget['budget_name']) ?>"
+                                title="Invite members">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -249,7 +252,8 @@ function getAvatarColor($id) {
                 <strong id="inviteModalBudgetName"></strong>.
             </p>
 
-            <form method="POST" action="index.php?page=shared-budgets&action=invite" id="inviteForm">
+            <!-- ✅ Form action points to InvitationController -->
+            <form method="POST" action="index.php?page=invitations&action=send" id="inviteForm">
                 <input type="hidden" name="budget_id" id="inviteModalBudgetId">
                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
 
@@ -325,7 +329,6 @@ function getAvatarColor($id) {
 
     </div>
 </div>
-
 
 <script src="frontend/js/shared_budgets.js"></script>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
