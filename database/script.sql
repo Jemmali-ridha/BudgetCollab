@@ -122,3 +122,52 @@ ADD CONSTRAINT fk_tr_budget
 FOREIGN KEY (id_budget)
 REFERENCES budgets(id_budget)
 ON DELETE CASCADE;
+
+ALTER TABLE utilisateurs
+ADD COLUMN status ENUM('pending', 'active', 'suspended')
+NOT NULL DEFAULT 'pending';
+
+ALTER TABLE budget_members
+DROP FOREIGN KEY budget_members_ibfk_2;
+
+ALTER TABLE budget_members
+DROP FOREIGN KEY budget_members_ibfk_1;
+
+ALTER TABLE budget_members
+ADD CONSTRAINT fk_bm_budget
+FOREIGN KEY (id_budget)
+REFERENCES budgets(id_budget)
+ON DELETE CASCADE;
+
+ALTER TABLE budget_members
+ADD CONSTRAINT fk_bm_user
+FOREIGN KEY (id_utilisateur)
+REFERENCES utilisateurs(id_utilisateur)
+ON DELETE CASCADE;
+
+ALTER TABLE budget_invitations
+DROP FOREIGN KEY fk_inv_by;
+
+ALTER TABLE budget_invitations
+DROP FOREIGN KEY fk_inv_user;
+
+ALTER TABLE budget_invitations
+ADD CONSTRAINT fk_inv_by
+FOREIGN KEY (invited_by)
+REFERENCES utilisateurs(id_utilisateur)
+ON DELETE CASCADE;
+
+ALTER TABLE budget_invitations
+ADD CONSTRAINT fk_inv_user
+FOREIGN KEY (invited_user)
+REFERENCES utilisateurs(id_utilisateur)
+ON DELETE CASCADE;
+
+ALTER TABLE budgets
+DROP FOREIGN KEY fk_budget_creator;
+
+ALTER TABLE budgets
+ADD CONSTRAINT fk_budget_creator
+FOREIGN KEY (created_by)
+REFERENCES utilisateurs(id_utilisateur)
+ON DELETE CASCADE;
