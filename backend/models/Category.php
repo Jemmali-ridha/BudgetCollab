@@ -66,7 +66,7 @@ class Category
 
     public function find(int $id): ?array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id_categorie = ?");
         $stmt->execute([$id]);
 
         $category = $stmt->fetch();
@@ -93,11 +93,11 @@ class Category
 
     public function update(int $id, string $name): bool
     {
-        $stmt = $this->pdo->prepare("
-            UPDATE categories
-            SET name = ?,est_systeme = 0
-            WHERE id = ?
-        ");
+       $stmt = $this->pdo->prepare("
+    UPDATE categories
+    SET nom_categorie = ?, est_systeme = 0
+    WHERE id_categorie = ?
+");
 
         return $stmt->execute([$name, $id]);
     }
