@@ -4,9 +4,9 @@ class Invitation
 {
     private PDO $pdo;
 
-    public function __construct(PDO $pdo)
+    public function __construct()
     {
-        $this->pdo = $pdo;
+        $this->pdo =  getDB();;
     }
 
     public function invite(int $budgetId, int $invitedBy, int $invitedUser): bool
