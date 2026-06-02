@@ -131,7 +131,21 @@ switch ($page) {
             };
 
             break;
-    
+
+    case 'profile':
+        require_once __DIR__ . '/backend/controllers/ProfileController.php';
+
+        $ctrl = new ProfileController();
+
+        match($action) {
+            'update'   => $ctrl->update(),
+            'password' => $ctrl->password(),
+            'delete'   => $ctrl->delete(),
+            default    => $ctrl->show(),
+        };
+
+        break;
+        
 
 
     case 'logout':

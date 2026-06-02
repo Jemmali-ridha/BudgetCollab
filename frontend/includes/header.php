@@ -13,6 +13,8 @@ $flash = getFlash();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="frontend/css/style.css">
     <link rel="stylesheet" href="frontend/css/dashboard.css">
+    <link rel="stylesheet" href="frontend/css/profile.css">
+
     <?php if (($_GET['page'] ?? '') === 'budgets'): ?>
     <link rel="stylesheet" href="frontend/css/budgets.css">
 <?php endif; ?>
@@ -24,6 +26,56 @@ $flash = getFlash();
 <?php if (($_GET['page'] ?? '') === 'categories'): ?>
     <link rel="stylesheet" href="frontend/css/categories.css">
 <?php endif; ?>
+
+<style>
+    .user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: var(--radius-md);
+    transition: background 0.15s;
+    width: 100%;
+    color: inherit; /* ← prevents link color override */
+}
+
+.user-profile-btn:hover {
+    background: var(--bg-primary);
+}
+
+.user-profile-btn:hover .user-name {
+    color: var(--green);
+}
+
+.user-profile-btn .user-name {
+    color: var(--text-primary);
+    transition: color 0.15s;
+}
+
+.user-profile-btn .user-email {
+    color: var(--text-secondary);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px; /* ← prevents squishing */
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* ← prevents flex from distorting it */
+}
+
+.avatar-initials {
+    font-size: 13px;
+    font-weight: 700;
+    color: #04342c;
+    line-height: 1;
+}
+</style>
 <body class="dashboard-page">
     <div class="app-layout">
         <aside class="sidebar">
@@ -75,15 +127,17 @@ $flash = getFlash();
             </nav>
 
             <div class="sidebar-user">
-                <div class="user-avatar">
-                    <span class="avatar-initials">                    <?= strtoupper(
-                        substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)
-                    ) ?></span>
-                </div>
-                <div class="user-info">
-                    <span class="user-name"><?= nettoyer($user['prenom'] . ' ' . $user['nom']) ?></span>
-                    <span class="user-email"><?= nettoyer($user['email']) ?></span>
-                </div>
+                <a href="index.php?page=profile" class="user-profile-btn">
+                    <div class="user-avatar">
+                        <span class="avatar-initials"><?= strtoupper(
+                            substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)
+                        ) ?></span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name"><?= nettoyer($user['prenom'] . ' ' . $user['nom']) ?></span>
+                        <span class="user-email"><?= nettoyer($user['email']) ?></span>
+                    </div>
+                </a>
                 <a href="index.php?page=logout" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
