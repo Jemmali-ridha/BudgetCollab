@@ -23,15 +23,21 @@ function roleBadge(string $role): string
     return "<span class=\"role-badge role-badge--{$cls}\">{$label}</span>";
 }
 
-function statusBadge(string $role, string $dateCreation): string
+function statusBadge(string $status): string
 {
-    $isPending = ($role === 'utilisateur')
-        && (strtotime($dateCreation) > strtotime('-24 hours'));
+    return match ($status) {
+        'pending' =>
+            '<span class="status-badge status-badge--pending">Pending</span>',
 
-    if ($isPending) {
-        return '<span class="status-badge status-badge--pending">Pending</span>';
-    }
-    return '<span class="status-badge status-badge--active">Active</span>';
+        'active' =>
+            '<span class="status-badge status-badge--active">Active</span>',
+
+        'suspended' =>
+            '<span class="status-badge status-badge--suspended">Suspended</span>',
+
+        default =>
+            '<span class="status-badge">Unknown</span>',
+    };
 }
 
 function formatAmount(float $amount): string
@@ -118,8 +124,7 @@ function timeAgo(string $datetime): string
                     $initiales = initiales($u['prenom'], $u['nom']);
                     $color     = avatarColor($fullName);
                     $role      = $u['nom_role'] ?? 'utilisateur';
-                    $isPending = ($role === 'utilisateur')
-                              && (strtotime($u['date_creation']) > strtotime('-24 hours'));
+                    $isPending = ($u['status'] ?? 'active') === 'pending';                    
                     $isCurrentUser = ((int)$u['id_utilisateur'] === (int)$_SESSION['user_id']);
                 ?>
                 <div class="user-row">
@@ -138,12 +143,12 @@ function timeAgo(string $datetime): string
                     </div>
 
                     <div class="col-status">
-                        <?= statusBadge($role, $u['date_creation']) ?>
+                        <?= statusBadge($u['status'] ?? 'active') ?>
                     </div>
 
                     <div class="col-actions">
                         <?php if ($isPending && !$isCurrentUser): ?>
-                            <form method="POST" action="index.php?page=admin" style="display:inline;">
+                            <form method="POST" action="index.php?page=admin&action=approve_user" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="action"  value="approve_user">
                                 <input type="hidden" name="user_id" value="<?= (int)$u['id_utilisateur'] ?>">
@@ -151,7 +156,7 @@ function timeAgo(string $datetime): string
                                     <i class="fas fa-check"></i>
                                 </button>
                             </form>
-                            <form method="POST" action="index.php?page=admin" style="display:inline;"
+                            <form method="POST" action="index.php?page=admin&action=suspend_user" style="display:inline;"
                                   onsubmit="return confirm('Reject and delete this user?')">
                                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="action"  value="delete">
@@ -161,7 +166,7 @@ function timeAgo(string $datetime): string
                                 </button>
                             </form>
                         <?php elseif (!$isCurrentUser): ?>
-                            <form method="POST" action="index.php?page=admin" style="display:inline;"
+                            <form method="POST" action="index.php?page=admin&action=delete" style="display:inline;"
                                   onsubmit="return confirm('Delete this user? This action cannot be undone.')">
                                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="action"  value="delete">

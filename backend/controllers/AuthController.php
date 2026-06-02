@@ -29,7 +29,7 @@ class AuthController
     {
         // 1. Vérifier le token CSRF
         if (!verifier_csrf($_POST['csrf_token'] ?? '')) {
-            flashMessage('danger', 'Token invalide, veuillez réessayer.');
+            flashMessage('danger', 'Invalid token, please try again.');
             $this->showLogin();
             return;
         }
@@ -40,7 +40,7 @@ class AuthController
 
         // 3. Validation basique
         if (empty($email) || empty($mdp)) {
-            flashMessage('danger', 'Tous les champs sont obligatoires.');
+            flashMessage('danger', 'All fields are required.');
             $this->showLogin();
             return;
         }
@@ -49,7 +49,7 @@ class AuthController
         $user = $this->model->trouverParEmail($email);
 
         if (!$user) {
-            flashMessage('danger', 'Email ou mot de passe incorrect.');
+            flashMessage('danger', 'Incorrect email or password.');
             $this->showLogin();
             return;
         }
@@ -57,10 +57,16 @@ class AuthController
 
         // 6. Vérifier le mot de passe (hash bcrypt)
         if (!password_verify($mdp, $user['mot_de_passe'])) {
-            flashMessage('danger', 'Email ou mot de passe incorrect.');
+            flashMessage('danger', 'Incorrect email or password.');
             $this->showLogin();
             return;
         }
+
+        if ($user['status'] !== 'active') {
+            flashMessage('danger', 'Your account is awaiting approval.');
+            header('Location: index.php?page=login');
+            exit;
+}
 
         $role = $this->model->getRole($user['id_utilisateur']);
 
@@ -118,19 +124,19 @@ class AuthController
         }
 
         if (strlen($mdp) < 8) {
-            flashMessage('danger', 'Le mot de passe doit contenir au moins 8 caractères.');
+            flashMessage('danger', 'The password must contain at least 8 characters.');
             $this->showRegister();
             return;
         }
 
         if ($mdp !== $mdp2) {
-            flashMessage('danger', 'Les mots de passe ne correspondent pas.');
+            flashMessage('danger', 'The passwords do not match.');
             $this->showRegister();
             return;
         }
 
         if ($this->model->emailExiste($email)) {
-            flashMessage('danger', 'Cet email est déjà utilisé.');
+            flashMessage('danger', 'This email address is already in use.');
             $this->showRegister();
             return;
         }
@@ -141,7 +147,7 @@ class AuthController
 
         flashMessage(
             'success',
-            'Inscription réussie !'
+            'Registration successful! Your account is currently pending administrator approval.'
         );
         header('Location: index.php?page=login');
         exit;

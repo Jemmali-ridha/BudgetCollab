@@ -124,6 +124,10 @@ case 'invitations':
             $ctrl = new AdminController();
 
             match($action){
+                'approve_user' => $ctrl->approveUser(),
+                'suspend_user' => $ctrl->suspendUser(),
+                'delete' => $ctrl->deleteUser(),
+
                 default => $ctrl->show()
             };
 

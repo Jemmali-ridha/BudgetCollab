@@ -42,7 +42,7 @@ class AdminController
     private function getUsers(): array
     {
         $stmt = $this->pdo->query(
-            'SELECT u.id_utilisateur, u.nom, u.prenom, u.email,
+            'SELECT u.id_utilisateur, u.nom, u.prenom, u.email,u.status,
                     u.date_creation, u.date_modification,
                     r.nom_role
              FROM utilisateurs u
@@ -53,19 +53,66 @@ class AdminController
     }
 
 
-    private function getPendingUsers(): array
-    {
-        $stmt = $this->pdo->query(
-            "SELECT u.id_utilisateur, u.nom, u.prenom, u.email,
-                    u.date_creation, r.nom_role
-             FROM utilisateurs u
-             LEFT JOIN roles r ON u.id_role = r.id_role
-             WHERE r.nom_role = 'utilisateur'
-               AND u.date_creation >= NOW() - INTERVAL 24 HOUR
-             ORDER BY u.date_creation DESC"
-        );
-        return $stmt->fetchAll();
+        public function approveUser(): void
+        {
+            $userId = (int)($_POST['user_id'] ?? 0);
+
+            $stmt = getDB()->prepare("
+                UPDATE utilisateurs
+                SET status = 'active'
+                WHERE id_utilisateur = ?
+            ");
+
+            $stmt->execute([$userId]);
+
+            flashMessage('success', 'User approved.');
+
+            header('Location: index.php?page=admin');
+            exit;
+        }
+
+        public function suspendUser(): void
+            {
+                $userId = (int)($_POST['user_id'] ?? 0);
+
+                $stmt = getDB()->prepare("
+                    UPDATE utilisateurs
+                    SET status = 'suspended'
+                    WHERE id_utilisateur = ?
+                ");
+
+                $stmt->execute([$userId]);
+
+                flashMessage('success', 'User suspended.');
+
+                header('Location: index.php?page=admin');
+                exit;
+            }
+
+        public function deleteUser(): void
+{
+    requiertConnexion();
+
+    $userId = (int)($_POST['user_id'] ?? 0);
+
+    if (!$userId) {
+        flashMessage('danger', 'Invalid user.');
+        header('Location: index.php?page=admin');
+        exit;
     }
+
+    $stmt = getDB()->prepare("
+        DELETE FROM utilisateurs
+        WHERE id_utilisateur = ?
+    ");
+
+    $stmt->execute([$userId]);
+
+    flashMessage('success', 'User deleted.');
+
+    header('Location: index.php?page=admin');
+    exit;
+}
 
 
     private function getRecentActivity(): array
