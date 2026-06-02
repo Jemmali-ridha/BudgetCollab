@@ -1,6 +1,5 @@
 <?php
 $user = utilisateurConnecte();
-$flash = getFlash();
 ?>
 
 <!DOCTYPE html>
