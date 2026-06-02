@@ -108,7 +108,7 @@ CREATE TABLE budget_invitations (
     invited_user   INT UNSIGNED NOT NULL,
     status         ENUM('pending', 'accepted', 'declined') NOT NULL DEFAULT 'pending',
     created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_inv_budget  FOREIGN KEY (id_budget)    REFERENCES budgets(id_budget),
+    CONSTRAINT fk_inv_budget FOREIGN KEY (id_budget) REFERENCES budgets(id_budget) ON DELETE CASCADE,
     CONSTRAINT fk_inv_by      FOREIGN KEY (invited_by)   REFERENCES utilisateurs(id_utilisateur),
     CONSTRAINT fk_inv_user    FOREIGN KEY (invited_user) REFERENCES utilisateurs(id_utilisateur),
     UNIQUE KEY uq_invite (id_budget, invited_user)
