@@ -13,7 +13,7 @@ switch ($page) {
 
 
     case 'view':
-        require_once __DIR__ . '/backend//controllers/ViewController.php';
+        require_once __DIR__ . '/backend/controllers/ViewController.php';
         $ctrl = new ViewController();
         match($action) {
             default => $ctrl->Home()
@@ -80,30 +80,27 @@ switch ($page) {
             break;
 
 
-        case 'shared-budgets':
-            require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
-            $ctrl = new SharedBudgetsController();
+case 'shared-budgets':
+    require_once __DIR__ . '/backend/controllers/SharedBudgetsController.php';
+    $ctrl = new SharedBudgetsController();
 
-            match($action) {
-                'invite'  => $ctrl->invite(),
-                'accept'  => $ctrl->accept(),
-                'decline' => $ctrl->decline(),
-                'delete'  => $ctrl->delete(),
-                default   => $ctrl->show(),
-            };
-            break;
+    match($action) {
+        'delete' => $ctrl->delete(),   
+        default  => $ctrl->show(),
+    };
+    break;
 
-        case 'invitations':
-            require_once __DIR__ . '/backend/controllers/InvitationController.php';
-            $ctrl = new InvitationController();
+case 'invitations':
+    require_once __DIR__ . '/backend/controllers/InvitationController.php';
+    $ctrl = new InvitationController();
 
-            match($action) {
-                'send'    => $ctrl->send(),
-                'accept'  => $ctrl->accept(),
-                'decline' => $ctrl->decline(),
-                default   => header('Location: index.php?page=shared-budgets'),
-            };
-            break;
+    match($action) {
+        'send'    => $ctrl->send(),
+        'accept'  => $ctrl->accept(),
+        'decline' => $ctrl->decline(),
+        default   => header('Location: index.php?page=shared-budgets'),
+    };
+    break;
 
 
         case 'categories':
