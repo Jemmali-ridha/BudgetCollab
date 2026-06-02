@@ -1,6 +1,3 @@
-/* ============================================
-   SHARED BUDGETS PAGE - BudgetCollab
-   ============================================ */
 
 .invitation-banner {
     background: rgba(99, 102, 241, 0.08);
@@ -128,7 +125,6 @@
     color: var(--text-primary);
 }
 
-/* ─── Header de page ───────────────────────────────────────────── */
 .shared-budgets-header {
     display: flex;
     align-items: center;
@@ -142,7 +138,6 @@
     margin-bottom: 0;
 }
 
-/* ─── Grid des budgets partagés ─────────────────────────────────── */
 .shared-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -171,7 +166,6 @@
 .shared-card--indigo { border-top-color: var(--indigo); }
 .shared-card--red    { border-top-color: var(--red); }
 
-/* ─── Header de carte (nom + boutons actions) ──────────────────── */
 .shared-card__header {
     display: flex;
     align-items: center;
@@ -196,7 +190,6 @@
     flex-shrink: 0;
 }
 
-/* ─── Petit bouton + rond pour inviter ─────────────────────────── */
 .btn-invite-card {
     flex-shrink: 0;
     width: 32px;
@@ -224,7 +217,6 @@
     transform: scale(0.95);
 }
 
-/* ─── Bouton suppression rond rouge ────────────────────────────── */
 .btn-delete-card {
     flex-shrink: 0;
     width: 32px;
@@ -253,7 +245,6 @@
     transform: scale(0.95);
 }
 
-/* ─── Avatars des membres ──────────────────────────────────────── */
 .member-avatars {
     display: flex;
     align-items: center;
@@ -283,14 +274,12 @@
 .member-avatar--alt3 { background: linear-gradient(135deg, #10B981, #06B6D4); }
 .member-avatar--alt4 { background: linear-gradient(135deg, #EC4899, #8B5CF6); }
 
-/* Avatar pour "plus de membres" */
 .member-avatar--more {
     background: linear-gradient(135deg, #64748B, #475569);
     font-size: 10px;
     font-weight: 600;
 }
 
-/* ─── Montants ─────────────────────────────────────────────────── */
 .shared-card__amount {
     font-size: 1.8rem;
     font-weight: 700;
@@ -305,7 +294,6 @@
     margin-top: 2px;
 }
 
-/* ─── Barre de progression ─────────────────────────────────────── */
 .progress-bar {
     width: 100%;
     height: 7px;
@@ -331,7 +319,6 @@
     margin-top: 4px;
 }
 
-/* ─── État vide ────────────────────────────────────────────────── */
 .shared-empty {
     grid-column: 1 / -1;
     text-align: center;
@@ -346,7 +333,6 @@
     opacity: 0.35;
 }
 
-/* ─── Activité récente ─────────────────────────────────────────── */
 .activity-list {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -432,7 +418,6 @@
     padding-top: 2px;
 }
 
-/* ─── Messages flash ───────────────────────────────────────────── */
 .flash-message {
     padding: 12px 20px;
     border-radius: var(--radius-md);
@@ -447,7 +432,6 @@
 .flash-message--success { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
 .flash-message--danger  { background: rgba(239,68,68,0.10);  color: var(--red);   border: 1px solid rgba(239,68,68,0.25); }
 
-/* ─── MODAL INVITE ─────────────────────────────────────────────── */
 .invite-modal {
     position: fixed;
     inset: 0;
@@ -550,7 +534,6 @@
     margin-bottom: 8px;
 }
 
-/* ─── Liste d'utilisateurs pour invitation ─────────────────────── */
 .users-list-container {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -697,7 +680,6 @@
     font-size: 0.875rem;
 }
 
-/* ─── Actions du modal ─────────────────────────────────────────── */
 .invite-modal__actions {
     display: flex;
     gap: 10px;
@@ -736,7 +718,6 @@
 
 .invite-modal__btn--submit:hover { background: #4f46e5; }
 
-/* ─── Message d'erreur dans le modal ───────────────────────────── */
 .modal-error-msg {
     font-size: 0.82rem;
     color: var(--red);
@@ -748,7 +729,6 @@
     display: none;
 }
 
-/* ─── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 640px) {
     .shared-grid { 
         grid-template-columns: 1fr; 
