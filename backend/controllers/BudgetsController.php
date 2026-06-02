@@ -8,10 +8,9 @@ class BudgetsController
     private Budget $model;
 
     public function __construct()
-    {
-        global $pdo;
-        $this->model = new Budget($pdo);
-    }
+{
+    $this->model = new Budget();
+}
 
     public function show(): void
     {
