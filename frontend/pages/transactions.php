@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="frontend/css/transactions.css">
 
 <?php
+$flash = $flash ?? getFlash();
 $iconMap = [
     'shopping-cart'   => 'fas fa-shopping-cart',
     'car'             => 'fas fa-car',
