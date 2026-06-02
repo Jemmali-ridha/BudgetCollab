@@ -1,9 +1,29 @@
-
 .categories-layout {
     display: grid;
     grid-template-columns: 1fr 420px;
     gap: 28px;
     align-items: start;
+    grid-template-rows: auto; 
+}
+
+.cat-left {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.cat-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 44px; /* compense la hauteur du .cat-section-header (titre + margin-bottom 16px) */
+}
+.cat-right .chart-card {
+    margin-top: 0;
+}
+
+.cat-right > :first-child {
+    margin-top: 0;
 }
 
 .cat-section-header {
@@ -112,17 +132,13 @@
     font-size: 0.875rem;
 }
 
-.cat-right {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
+/* ✅ MODIFIÉ - S'assurer que la carte graphique prend toute la largeur */
 .chart-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: 24px;
+    height: auto;
 }
 
 .chart-card__title {
@@ -132,9 +148,11 @@
     color: var(--text-primary);
 }
 
+/* ✅ MODIFIÉ - Hauteur fixe pour le canvas */
 .chart-wrap {
     position: relative;
     height: 280px;
+    width: 100%;
 }
 
 .insights-card {
@@ -298,6 +316,7 @@
 
 .btn-sm { padding: 7px 16px; font-size: 0.85rem; }
 
+/* Responsive */
 @media (max-width: 900px) {
     .categories-layout {
         grid-template-columns: 1fr;

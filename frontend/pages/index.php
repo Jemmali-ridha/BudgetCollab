@@ -40,8 +40,8 @@
                 set limits, and achieve your financial goals together.
             </p>
             <div class="banner-buttons">
-                <a href="register.html" class="btn-primary btn-large">Get Started Free</a>
-                <a href="#features" class="btn-secondary btn-large">View Demo</a>
+                <a href="index.php?page=register" class="btn-primary btn-large">Get Started Free</a>
+                
             </div>
         </section>
 
